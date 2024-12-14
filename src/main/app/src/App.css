@@ -1,0 +1,14 @@
+
+.landing-page {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(rgba(1, 74, 71, 0.7), rgba(93, 5, 39, 0.7)), url('../../assets/head.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}

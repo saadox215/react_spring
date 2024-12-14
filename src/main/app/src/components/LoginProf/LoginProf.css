@@ -1,0 +1,118 @@
+.login {
+    background: linear-gradient(135deg, #048973, #6a063f);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0; /* Supprime les marges supplémentaires */
+}
+.container{
+    display : flex;
+    align-items: center;
+    min-height: 100vh;
+    margin-left: 30px;
+}
+.login img {
+    height: 450px;
+    border-radius: 10px;
+}
+
+.login h1 {
+    font-size: 60px;
+    margin-bottom: 10px;
+    margin-left: 150px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.login form {
+    background-color: rgba(7, 137, 94, 0.1);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(161, 7, 105, 0.2);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-left: 130px !important;
+}
+
+.login input[type="email"],
+.login input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+}
+
+.login input[type="email"]::placeholder,
+.login input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.login button[type="submit"] {
+    background: linear-gradient(135deg, #026f6d, #70063f);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.login button[type="submit"]:hover {
+    background-color: #003380;
+}
+
+.error-message {
+    color: #dc3545;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.signup-link {
+    margin-top: 20px;
+    color: #ffffff;
+    text-align: center;
+}
+
+.signup-link a {
+    color: #ffd700;
+    text-decoration: underline;
+}
+
+.signup-link a:hover {
+    color: #ffcc00;
+    text-decoration: none;
+}
+
+.top-left-navigation {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.back-to-home {
+    text-decoration: none;
+    color: #650a4c;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s ease;
+}
+
+.back-to-home:hover {
+    color: #00ffee;
+}
