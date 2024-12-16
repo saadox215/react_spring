@@ -1,0 +1,126 @@
+.filiere-page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: transparent;
+}
+
+.filiere-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.filiere-title {
+    font-weight: 600;
+    color: #1976D2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 20px;
+}
+
+.filieres-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+}
+
+.filiere-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.filiere-image-container {
+    height: 250px;
+    overflow: hidden;
+}
+
+.filiere-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.filiere-card:hover .filiere-image {
+    transform: scale(1.1);
+}
+
+.filiere-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.filiere-name {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+}
+
+.filiere-description {
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.learn-more-btn {
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+}
+
+.no-filieres-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+@media (max-width: 768px) {
+    .filieres-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.delete-btn {
+    margin-top: 10px;
+    background-color: #d32f2f;  /* Couleur rouge pour l'alerte */
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c62828;  /* Couleur rouge foncé au survol */
+    transform: scale(1.05);  /* Effet de zoom au survol */
+}
+
+.delete-btn:active {
+    background-color: #b71c1c;  /* Couleur encore plus foncée lorsque cliqué */
+}

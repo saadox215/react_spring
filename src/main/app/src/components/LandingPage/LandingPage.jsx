@@ -17,7 +17,7 @@ const LandingPage = () => {
                     <TypeWriter
                         text="Explorez et suivez les performances académiques de l'ensemble de votre école."
                         fontSize="20px"
-                        duration="6s"
+                        duration="5s"
                     />
                 </div>
             </div>

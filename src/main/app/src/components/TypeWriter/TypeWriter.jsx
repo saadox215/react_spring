@@ -20,8 +20,8 @@ const TypeWriterText = styled.div`
   border-right: 0.15em solid black;
   width: 0;
   animation: 
-    ${typing} ${(props) => props.duration || '4s'} steps(40, end) ${(props) => props.delay || '0s'} forwards, 
-    ${blinkCaret} 0.75s step-end infinite;
+    ${typing} ${(props) => props.duration || '2s'} steps(40, end) ${(props) => props.delay || '0s'} forwards, 
+    ${blinkCaret} 0.25s step-end infinite;
 `;
 
 const TypeWriter = ({ text, fontSize, duration, delay }) => {
