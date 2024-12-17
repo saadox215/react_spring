@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface FiliereRepository extends JpaRepository<Filiere, Long> {
-    
-    List<Filiere> findByNom(String nom);
+
+    List<Filiere> findAll();
     void deleteById(Long id);
 }

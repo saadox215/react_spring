@@ -19,10 +19,11 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './components/DashboardAdmin/MenuContent'; 
+import CreativeAdminHeader from './components/DashboardAdmin/Header'
 
 export default function Dashboard() {
   const [darkMode, setDarkMode] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState('home'); // Track selected menu
+  const [selectedMenu, setSelectedMenu] = useState('home');
   const navigate = useNavigate();
 
   const toggleDarkMode = () => {
@@ -67,6 +68,16 @@ export default function Dashboard() {
       },
     },
   });
+  function renderSelectedMenu(selectedMenu) {
+    switch (selectedMenu) {
+      case 'filiere':
+        return <Filiere />;
+      case 'home':
+        return <Home />;
+      default:
+        return <Home />;
+    }
+  };
 
 
   const handleMenuClick = (menu) => {
@@ -152,17 +163,11 @@ export default function Dashboard() {
           <Stack spacing={2} sx={{ alignItems: 'center', mx: 3, pb: 5, mt: { xs: 8, md: 0 } }}>
             <Stack direction="row" sx={{ display: { xs: 'none', md: 'flex' }, width: '100%', alignItems: 'center', justifyContent: 'space-between', pt: 1.5 }} spacing={2}>
               <NavbarBreadcrumbs />
-              <Stack direction="row" sx={{ gap: 5 }}>
-                <Search />
-                <CustomDatePicker />
-                <IconButton onClick={toggleDarkMode} color="inherit" aria-label="toggle dark mode">
-                  {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
-                </IconButton>
-              </Stack>
+              <CreativeAdminHeader onModeChange={toggleDarkMode} />
             </Stack>
 
            
-            {selectedMenu === 'filiere' ? <Filiere /> : <Home />}  {/* Dynamically render Home or Filiere based on selectedMenu */}
+            {renderSelectedMenu(selectedMenu)} 
           </Stack>
         </Box>
       </Box>

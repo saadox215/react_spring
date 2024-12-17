@@ -42,32 +42,7 @@ const AdminDashboardEnhanced = () => {
     filieres: 12,
     modules: 45,
     etudiants: 1200,
-    topPerformers: [
-      { 
-        name: 'AMINE NAIMA', 
-        role: 'Professeur', 
-        module: 'Développement Web', 
-        performance: 95, 
-        specialty: 'Frontend Expert',
-        achievements: 3
-      },
-      { 
-        name: 'AFIFI SAAD', 
-        role: 'Professeur', 
-        module: 'Machine Learning', 
-        performance: 88, 
-        specialty: 'AI Researcher',
-        achievements: 5
-      },
-      { 
-        name: 'Sophie Laurent', 
-        role: 'Professeur', 
-        module: 'Cybersécurité', 
-        performance: 92, 
-        specialty: 'Network Security',
-        achievements: 4
-      }
-    ],
+    
     distributionEtudiants: [
       { name: 'Informatique', value: 450, color: '#0088FE' },
       { name: 'Réseaux', value: 300, color: '#00C49F' },
@@ -83,7 +58,6 @@ const AdminDashboardEnhanced = () => {
     ]
   });
 
-  // Composant de Statistiques Globales
   const GlobalStatistics = () => (
     <Grid container spacing={3}>
       {[
@@ -115,7 +89,6 @@ const AdminDashboardEnhanced = () => {
     </Grid>
   );
 
-  // Graphique de Distribution des Étudiants
   const StudentDistributionChart = () => (
     <Card sx={{ height: '100%' }}>
       <CardContent>
@@ -178,95 +151,7 @@ const AdminDashboardEnhanced = () => {
     </Card>
   );
 
-  const TopPerformersShowcase = () => (
-    <Card 
-      sx={{ 
-        height: '100%', 
-        background: 'transparant',
-        boxShadow: 3,
-        borderRadius: 3
-      }}
-    >
-      <CardContent>
-        <Typography 
-          variant="h6" 
-          gutterBottom 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            color: '#3f51b5',
-            fontWeight: 'bold'
-          }}
-        >
-          <StarsIcon sx={{ mr: 2, color: '#ffc107' }} />
-          🏆 Top Performers Académiques
-        </Typography>
-        
-        {dashboardData.topPerformers.map((performer, index) => (
-          <Card 
-            key={index} 
-            sx={{ 
-              mb: 2, 
-              p: 2, 
-              backgroundColor: 'transparant', 
-              boxShadow: 1,
-              transition: 'transform 0.2s',
-              '&:hover': { transform: 'scale(1.02)' }
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar 
-                  sx={{ 
-                    width: 56, 
-                    height: 56, 
-                    mr: 2, 
-                    bgcolor: `primary.light` 
-                  }}
-                >
-                  {performer.name.charAt(0)}
-                </Avatar>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                    {performer.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {performer.module} | {performer.specialty}
-                  </Typography>
-                </Box>
-              </Box>
-              
-              <Box sx={{ textAlign: 'right' }}>
-                <MUITooltip title="Performance Score">
-                  <Chip 
-                    label={`${performer.performance}%`} 
-                    color={
-                      performer.performance > 90 ? 'success' : 
-                      performer.performance > 80 ? 'primary' : 'warning'
-                    }
-                    icon={<FireIcon />}
-                  />
-                </MUITooltip>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  🏅 {performer.achievements} Achievements
-                </Typography>
-              </Box>
-            </Box>
-            
-            <LinearProgress 
-              variant="determinate" 
-              value={performer.performance} 
-              sx={{ mt: 2, height: 8, borderRadius: 4 }}
-              color={
-                performer.performance > 90 ? 'success' : 
-                performer.performance > 80 ? 'primary' : 'warning'
-              }
-            />
-          </Card>
-        ))}
-      </CardContent>
-    </Card>
-  );
+  
 
   return (
     <Box sx={{ flexGrow: 1, p: 3, backgroundColor: 'transparent' }}>
@@ -274,6 +159,7 @@ const AdminDashboardEnhanced = () => {
         variant="h3" 
         gutterBottom 
         sx={{ 
+          marginBottom: '4px',
           fontWeight: 'bold', 
           mb: 4, 
           textAlign: 'center', 
@@ -284,16 +170,15 @@ const AdminDashboardEnhanced = () => {
           letterSpacing: 2
         }}
       >
-        🌟 Intelligence Académique 🎓
+        🌟 Tableau de bord Admin 🎓
       </Typography>
 
-      <Grid container spacing={3}>
-        {/* Statistiques Globales */}
-        <Grid item xs={12}>
+      <Grid container spacing={2}>
+        
+        <Grid item xs={20} >
           <GlobalStatistics />
         </Grid>
 
-        {/* Graphiques Avancés */}
         <Grid item xs={12} md={6}>
           <StudentDistributionChart />
         </Grid>
@@ -301,10 +186,6 @@ const AdminDashboardEnhanced = () => {
           <ModulePerformanceChart />
         </Grid>
 
-        {/* Top Performers */}
-        <Grid item xs={12}>
-          <TopPerformersShowcase />
-        </Grid>
       </Grid>
     </Box>
   );
