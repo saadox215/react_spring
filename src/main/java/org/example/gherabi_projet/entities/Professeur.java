@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "professeur")
-@AllArgsConstructor @NoArgsConstructor @Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class Professeur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,46 @@ public class Professeur {
     private String nom;
     private String prenom;
     private String specialite;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getSpecialite() {
+        return specialite;
+    }
+
+    public void setSpecialite(String specialite) {
+        this.specialite = specialite;
+    }
 
     @ManyToMany
     @JoinTable(

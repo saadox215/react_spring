@@ -10,8 +10,6 @@ import lombok.Setter;
 @Table(name = "evaluation")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class Evaluation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +18,38 @@ public class Evaluation {
     private String code;
     private double note;
     private String type;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public double getNote() {
+        return note;
+    }
+
+    public void setNote(double note) {
+        this.note = note;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "eval_type_id", referencedColumnName = "id")

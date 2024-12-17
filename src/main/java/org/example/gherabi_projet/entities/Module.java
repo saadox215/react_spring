@@ -13,8 +13,6 @@ import java.util.List;
 @Table(name = "module")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +20,64 @@ public class Module {
     private String code;
     private String nom;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
     private List<Element> elements;
 
+    public List<Element> getElements() {
+        return elements;
+    }
 
+    public void setElements(List<Element> elements) {
+        this.elements = elements;
+    }
+
+    public Filiere getFiliere() {
+        return filiere;
+    }
+
+    public void setFiliere(Filiere filiere) {
+        this.filiere = filiere;
+    }
+
+    public List<Professeur> getProfesseurs() {
+        return professeurs;
+    }
+
+    public void setProfesseurs(List<Professeur> professeurs) {
+        this.professeurs = professeurs;
+    }
+
+    public List<Semestre> getSemestres() {
+        return semestres;
+    }
+
+    public void setSemestres(List<Semestre> semestres) {
+        this.semestres = semestres;
+    }
 
     @ManyToOne
     @JoinColumn(name = "filiere_id", nullable = false)

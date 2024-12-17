@@ -47,12 +47,7 @@ export default function Dashboard() {
       boxSizing: 'border-box',
     },
   }));
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem('login');
-    if (!isLoggedIn) {
-      navigate('/admin/login');
-    }
-  }, [navigate]);
+
 
   const theme = createTheme({
     palette: {
