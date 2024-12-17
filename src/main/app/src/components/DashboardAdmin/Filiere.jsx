@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Button, Skeleton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { 
+    Card, 
+    Typography, 
+    Button, 
+    Skeleton, 
+    Dialog, 
+    DialogTitle, 
+    DialogContent, 
+    DialogActions, 
+    TextField,
+    Snackbar,
+    Alert
+} from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,7 +27,13 @@ const FilierePage = () => {
     const [isLoading, setIsLoading] = useState(true);
     
     const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+    const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] = useState(false);
     const [currentFiliere, setCurrentFiliere] = useState(null);
+    
+    // New state for download feedback
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
     useEffect(() => {
         const fetchFilieres = async () => {
@@ -38,9 +56,32 @@ const FilierePage = () => {
         fetchFilieres();
     }, []);
 
-    const deleteFiliere = async (id) => {
+    // PDF Download Handler
+    const handlePdfDownload = (filiere) => {
+        
+            const pdfPath = `http://localhost:8081${filiere.pdfPath}`;
+        
+            // Ouvrir le PDF dans un nouvel onglet
+            window.open(pdfPath, '_blank');
+        
+            // Afficher un message de confirmation
+            setSnackbarMessage(`Redirection vers le PDF de ${filiere.nom} réussie`);
+            setSnackbarSeverity('info'); // Vous pouvez utiliser 'success' si vous préférez
+            setOpenSnackbar(true);
+        
+        
+    };
+
+    const confirmDeleteFiliere = (filiere) => {
+        setCurrentFiliere(filiere);
+        setOpenDeleteConfirmDialog(true);
+    };
+
+    const deleteFiliere = async () => {
+        if (!currentFiliere) return;
+
         try {
-            const response = await fetch(`http://localhost:8081/admin/filiere/delete/${id}`, {
+            const response = await fetch(`http://localhost:8081/admin/filiere/delete/${currentFiliere.id}`, {
                 method: 'DELETE',
             });
 
@@ -48,9 +89,12 @@ const FilierePage = () => {
                 throw new Error('Erreur lors de la suppression de la filière');
             }
 
-            setFilieres((prevFilieres) => prevFilieres.filter((filiere) => filiere.id !== id));
+            setFilieres((prevFilieres) => prevFilieres.filter((filiere) => filiere.id !== currentFiliere.id));
+            setOpenDeleteConfirmDialog(false);
+            setCurrentFiliere(null);
         } catch (err) {
             setError(err.message);
+            setOpenDeleteConfirmDialog(false);
         }
     };
 
@@ -59,7 +103,6 @@ const FilierePage = () => {
         setOpenUpdateDialog(true);
     };
 
-  
     const handleUpdateChange = (e) => {
         const { name, value } = e.target;
         setCurrentFiliere(prev => ({
@@ -67,7 +110,6 @@ const FilierePage = () => {
             [name]: value
         }));
     };
-
 
     const submitUpdateFiliere = async () => {
         try {
@@ -164,7 +206,6 @@ const FilierePage = () => {
                     {filieres.map((filiere) => (
                         <motion.div
                             key={filiere.id}
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
                             <Card 
@@ -205,9 +246,11 @@ const FilierePage = () => {
                                         size="small" 
                                         className="learn-more-btn"
                                         startIcon={<MoreIcon />}
-                                        sx={{ marginRight: 2,marginBottom:2 }}
+                                        sx={{ marginRight: 2, marginBottom: 2 }}
+                                        onClick={() => handlePdfDownload(filiere)}
+                                        disabled={!filiere.pdfPath}
                                     >
-                                        En savoir plus
+                                        {filiere.pdfPath ? 'En savoir plus' : 'Pas de PDF'}
                                     </Button>
 
                                     <Button
@@ -216,7 +259,7 @@ const FilierePage = () => {
                                         size="small"
                                         className="update-btn"
                                         startIcon={<EditIcon />}
-                                        sx={{ marginRight: 2,marginBottom:2 }}
+                                        sx={{ marginRight: 2, marginBottom: 2 }}
                                         onClick={() => openUpdateFiliere(filiere)}
                                     >
                                         Modifier
@@ -228,7 +271,7 @@ const FilierePage = () => {
                                         size="small"
                                         className="delete-btn"
                                         startIcon={<DeleteIcon />}
-                                        onClick={() => deleteFiliere(filiere.id)}
+                                        onClick={() => confirmDeleteFiliere(filiere)}
                                     >
                                         Supprimer
                                     </Button>
@@ -239,7 +282,23 @@ const FilierePage = () => {
                 </motion.div>
             )}
 
-            
+            {/* Snackbar for download feedback */}
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert 
+                    onClose={() => setOpenSnackbar(false)}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
+            {/* Update Dialog */}
             <Dialog 
                 open={openUpdateDialog} 
                 onClose={() => setOpenUpdateDialog(false)}
@@ -306,7 +365,6 @@ const FilierePage = () => {
                                     },
                                   }}
                             />
-                           
                         </div>
                     )}
                 </DialogContent>
@@ -323,6 +381,37 @@ const FilierePage = () => {
                         variant="contained"
                     >
                         Enregistrer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog
+                open={openDeleteConfirmDialog}
+                onClose={() => setOpenDeleteConfirmDialog(false)}
+                maxWidth="xs"
+                fullWidth
+            >
+                <DialogTitle>Confirmer la suppression</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">
+                        Êtes-vous sûr de vouloir supprimer la filière "{currentFiliere?.nom}" ?
+                        Cette action est irréversible.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={() => setOpenDeleteConfirmDialog(false)} 
+                        color="primary"
+                    >
+                        Annuler
+                    </Button>
+                    <Button 
+                        onClick={deleteFiliere} 
+                        color="error" 
+                        variant="contained"
+                    >
+                        Confirmer
                     </Button>
                 </DialogActions>
             </Dialog>

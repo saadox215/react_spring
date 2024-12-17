@@ -159,7 +159,7 @@ const AdminDashboardEnhanced = () => {
         variant="h3" 
         gutterBottom 
         sx={{ 
-          marginBottom: '4px',
+          marginBottom: '5px',
           fontWeight: 'bold', 
           mb: 4, 
           textAlign: 'center', 
@@ -173,7 +173,7 @@ const AdminDashboardEnhanced = () => {
         🌟 Tableau de bord Admin 🎓
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         
         <Grid item xs={20} >
           <GlobalStatistics />

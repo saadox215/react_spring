@@ -23,6 +23,8 @@ public class Filiere {
 
 
     private String imagePath;
+    @Column(nullable = true)
+    private String pdfPath;
 
     public String getImagePath() {
         return imagePath;
