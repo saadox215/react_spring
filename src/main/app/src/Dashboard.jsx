@@ -14,7 +14,7 @@ import CustomDatePicker from './components/DashboardAdmin/CustomDatePicker';
 import { styled } from '@mui/material/styles';
 import logoAdmin from './assets/logoadmin.jpg';
 import MuiDrawer from '@mui/material/Drawer';
-import { Box, useTheme, Button } from '@mui/material';
+import { Box, useTheme, Button, Typography, Avatar } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -53,7 +53,7 @@ export default function Dashboard() {
       navigate('/admin/login');
     }
   }, [navigate]);
-
+  
   const theme = createTheme({
     palette: {
       mode: darkMode ? 'dark' : 'light',
@@ -99,35 +99,75 @@ export default function Dashboard() {
       }}
     >
       <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        py: 4,
+        px: 2,
+        background: darkMode
+          ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' 
+          : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+        borderBottom: `2px solid ${theme.palette.primary.main}`,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <Box
         sx={{
-          display: 'flex',
-          mt: 'calc(var(--template-frame-height, 0px) + 4px)',
-          p: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100px',
+          position: 'absolute',
+          top: '-50%',
+          left: '-50%',
+          width: '200%',
+          height: '200%',
+          background: darkMode
+            ? 'radial-gradient(circle, rgba(32,38,57,0.3) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
+          animation: 'pulse 5s infinite alternate',
+          '@keyframes pulse': {
+            '0%': { transform: 'scale(0.95)' },
+            '100%': { transform: 'scale(1.05)' },
+          },
+        }}
+      />
+
+      {/* Logo with glowing effect */}
+      <Avatar
+        src={logoAdmin}
+        sx={{
+          width: 80,
+          height: 80,
+          mb: 2,
+          border: `3px solid ${theme.palette.primary.main}`,
+          boxShadow: `0 0 20px ${theme.palette.primary.main}`,
+          transform: 'perspective(500px) rotateY(10deg)',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            transform: 'perspective(500px) rotateY(-10deg) scale(1.05)',
+            boxShadow: `0 0 30px ${theme.palette.primary.main}`,
+          },
+        }}
+      />
+
+      {/* Title with modern typography */}
+      <Typography 
+        variant="h4" 
+        sx={{ 
+          fontWeight: 500, 
+          color: theme.palette.text.primary,
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase',
+          textShadow: darkMode 
+            ? '2px 2px 4px rgba(3, 45, 130, 0.5)' 
+            : '2px 2px 4px rgba(12, 11, 85, 0.2)',
+          mb: 1,
         }}
       >
-        <img
-          src={logoAdmin}
-          alt="Admin Logo"
-          style={{
-            maxWidth: '80px',
-            maxHeight: '100%',
-            objectFit: 'contain',
-            marginRight: '16px',
-          }}
-        />
-        <span
-          style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-            color: theme.palette.text.primary,
-          }}
-        >
-          ADMIN
-        </span>
-      </Box>
+        Admin Hub
+      </Typography>
+
+    </Box>
       <Divider />
      
       <MenuContent onMenuClick={handleMenuClick} selectedMenu={selectedMenu} />

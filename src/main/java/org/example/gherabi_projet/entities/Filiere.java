@@ -25,6 +25,8 @@ public class Filiere {
 
 
     private String imagePath;
+    @Column(nullable = true)
+    private String pdfPath;
 
     @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL)
     private List<Module> modules;
