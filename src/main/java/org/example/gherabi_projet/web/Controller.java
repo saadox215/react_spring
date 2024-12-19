@@ -148,7 +148,6 @@ public class Controller {
         return moduleRepository.findAll().stream()
                 .map(module -> new ModuleDTO(
                         module.getId(),
-                        module.getCode(),
                         module.getNom(),
                         module.getFiliere().getNom()))
                 .collect(Collectors.toList());
@@ -165,7 +164,6 @@ public class Controller {
     public ResponseEntity<String> updateModule(@PathVariable Long id, @RequestBody Module moduleDetails) {
         return moduleRepository.findById(id)
                 .map(existingModule -> {
-                    existingModule.setCode(moduleDetails.getCode());
                     existingModule.setNom(moduleDetails.getNom());
                     existingModule.setFiliere(moduleDetails.getFiliere());
                     moduleRepository.save(existingModule);

@@ -32,7 +32,6 @@ const ModuleManagementPage = () => {
   const [filieres, setFilieres] = useState([]);
   const [formData, setFormData] = useState({
     id: null,
-    code: '',
     nom: '',
     filiere: ''
   });
@@ -132,7 +131,6 @@ const ModuleManagementPage = () => {
         },
         body: JSON.stringify({
           id: null,
-          code: formData.code,
           nom: formData.nom,
           filiere: {
             id: formData.filiere
@@ -167,7 +165,6 @@ const ModuleManagementPage = () => {
         },
         body: JSON.stringify({
           id: formData.id,
-          code: formData.code,
           nom: formData.nom,
           filiere: {
             id: formData.filiere
@@ -250,7 +247,6 @@ const ModuleManagementPage = () => {
       // Use optional chaining and provide fallback values
       setFormData({
         id: module.id ?? null,
-        code: module.code ?? '',
         nom: module.nom ?? '',
         // Handle nested filiere with additional safety
         filiere: module.filiere?.id ?? 
@@ -268,7 +264,6 @@ const ModuleManagementPage = () => {
   const resetForm = () => {
     setFormData({
       id: null,
-      code: '',
       nom: '',
       filiere: ''
     });
@@ -304,37 +299,7 @@ const ModuleManagementPage = () => {
         <CardContent>
           <form onSubmit={isEditing ? handleUpdateModule : handleAddModule}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  name="code"
-                  label="Code du Module"
-                  value={formData.code}
-                  onChange={handleInputChange}
-                  sx={{
-                    marginBottom: 2,
-                    '& .MuiInputBase-input': {
-                      color: 'blue', 
-                    },
-                    '& input': {
-                        backgroundColor:'transparent'
-                      },
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'blue',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'darkblue', 
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: 'blue', 
-                      },
-                    },
-                  }}
-                  required
-                  variant="outlined"
-                />
-              </Grid>
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -464,7 +429,6 @@ const ModuleManagementPage = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell>Code</TableCell>
                     <TableCell>Nom</TableCell>
                     <TableCell>Filière</TableCell>
                     <TableCell>Actions</TableCell>
@@ -475,7 +439,6 @@ const ModuleManagementPage = () => {
                     modules.map((module) => (
                       <TableRow key={module.id}>
                         <TableCell>{module.id}</TableCell>
-                        <TableCell>{module.code}</TableCell>
                         <TableCell>{module.nom}</TableCell>
                         <TableCell>{module.filiereNom || module.filiere?.nom || 'N/A'}</TableCell>
                         <TableCell>

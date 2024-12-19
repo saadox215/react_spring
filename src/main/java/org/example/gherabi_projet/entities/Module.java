@@ -24,13 +24,7 @@ public class Module {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getNom() {
         return nom;
@@ -75,7 +69,6 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
     private String nom;
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
