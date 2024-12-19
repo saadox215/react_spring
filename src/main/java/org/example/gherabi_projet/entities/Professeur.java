@@ -61,6 +61,22 @@ public class Professeur {
         this.specialite = specialite;
     }
 
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    public void setModules(List<Module> modules) {
+        this.modules = modules;
+    }
+
+    public List<Compte> getComptes() {
+        return comptes;
+    }
+
+    public void setComptes(List<Compte> comptes) {
+        this.comptes = comptes;
+    }
+
     @ManyToMany
     @JoinTable(
             name = "professeur_module",
