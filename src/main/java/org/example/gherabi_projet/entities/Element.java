@@ -34,6 +34,22 @@ public class Element {
         return coefficient;
     }
 
+    public Module getModule() {
+        return module;
+    }
+
+    public void setModule(Module module) {
+        this.module = module;
+    }
+
+    public Professeur getProfeseur() {
+        return profeseur;
+    }
+
+    public void setProfeseur(Professeur profeseur) {
+        this.profeseur = profeseur;
+    }
+
     public void setCoefficient(double coefficient) {
         this.coefficient = coefficient;
     }
@@ -41,5 +57,8 @@ public class Element {
     @ManyToOne
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
+    @ManyToOne
+    @JoinColumn(name = "professeur_id", nullable = true)
+    private Professeur profeseur;
 
 }
