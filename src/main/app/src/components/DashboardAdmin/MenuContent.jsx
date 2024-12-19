@@ -16,7 +16,7 @@ const mainListItems = [
   { text: 'Dashboard', icon: <SchoolRoundedIcon />, value: 'home' },
   { text: 'Filières', icon: <ClassRoundedIcon />, value: 'filiere' },
   { text: 'Modules', icon: <LibraryBooksRoundedIcon />, value: 'modules' },
-  { text: 'Professeurs', icon: <PersonRoundedIcon />, value: 'professeurs' },
+  { text: 'Professeurs', icon: <PersonRoundedIcon />, value: 'professeur' },
   { text: 'Étudiants', icon: <GroupRoundedIcon />, value: 'etudiants' },
   { text: 'Gestion Comptes', icon: <AccountCircleRoundedIcon />, value: 'gestion-comptes' },
 ];

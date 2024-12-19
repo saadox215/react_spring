@@ -1,31 +1,22 @@
 package org.example.gherabi_projet.web;
 
-import jakarta.persistence.criteria.Path;
-import org.example.gherabi_projet.entities.Compte;
-import org.example.gherabi_projet.entities.Filiere;
+import org.example.gherabi_projet.entities.*;
+import org.example.gherabi_projet.entities.Module;
 import org.example.gherabi_projet.repository.CompteRepository;
 import org.example.gherabi_projet.repository.FiliereRepository;
+import org.example.gherabi_projet.repository.ModuleRepository;
+import org.example.gherabi_projet.repository.ProfesseurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.naming.AuthenticationException;
-
-import static jakarta.persistence.GenerationType.UUID;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,6 +27,10 @@ public class Controller {
     private CompteRepository compteRepository;
     @Autowired
     private FiliereRepository filiereRepository;
+    @Autowired
+    private ProfesseurRepository professeurRepository;
+    @Autowired
+    private ModuleRepository moduleRepository;
 
     @GetMapping("/filiere")
     public List<Filiere> getAllFilieres() {
@@ -113,6 +108,86 @@ public class Controller {
         filiereRepository.save(existingFiliere);
 
         return ResponseEntity.ok("Filière mise à jour avec succès");
+    }
+
+    @GetMapping("/professeurs")
+    public List<Professeur> getAllProfesseurs() {
+        return professeurRepository.findAll();
+    }
+
+    @PostMapping("/professeurs/add")
+    public ResponseEntity<String> addProfesseur(@RequestBody Professeur professeur) {
+        professeurRepository.save(professeur);
+        return ResponseEntity.ok("Professeur ajouté avec succès");
+    }
+
+    @PutMapping("/professeurs/update/{id}")
+    public ResponseEntity<String> updateProfesseur(@PathVariable Long id, @RequestBody Professeur professeurDetails) {
+        return professeurRepository.findById(id)
+                .map(existingProfesseur -> {
+                    existingProfesseur.setNom(professeurDetails.getNom());
+                    existingProfesseur.setPrenom(professeurDetails.getPrenom());
+                    existingProfesseur.setSpecialite(professeurDetails.getSpecialite());
+                    professeurRepository.save(existingProfesseur);
+                    return ResponseEntity.ok("Professeur mis à jour avec succès");
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/professeurs/delete/{id}")
+    public ResponseEntity<Void> deleteProfesseur(@PathVariable Long id) {
+        if (!professeurRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        professeurRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+    // -------------------- MODULE SERVICES --------------------
+    @GetMapping("/modules")
+    public List<ModuleDTO> getAllModules() {
+        return moduleRepository.findAll().stream()
+                .map(module -> new ModuleDTO(
+                        module.getId(),
+                        module.getCode(),
+                        module.getNom(),
+                        module.getFiliere().getNom()))
+                .collect(Collectors.toList());
+    }
+
+
+    @PostMapping("/modules/add")
+    public ResponseEntity<String> addModule(@RequestBody Module module) {
+        Module savedModule = moduleRepository.save(module);
+        return ResponseEntity.ok("Module ajouté avec succès: " + savedModule);
+    }
+
+    @PutMapping("/modules/update/{id}")
+    public ResponseEntity<String> updateModule(@PathVariable Long id, @RequestBody Module moduleDetails) {
+        return moduleRepository.findById(id)
+                .map(existingModule -> {
+                    existingModule.setCode(moduleDetails.getCode());
+                    existingModule.setNom(moduleDetails.getNom());
+                    existingModule.setFiliere(moduleDetails.getFiliere());
+                    moduleRepository.save(existingModule);
+                    return ResponseEntity.ok("Module mis à jour avec succès");
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/modules/delete")
+    public ResponseEntity<Void> deleteModule(@RequestBody Map<String, Long> payload) {
+        Long id = payload.get("id");
+
+        if (id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!moduleRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        moduleRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
 }

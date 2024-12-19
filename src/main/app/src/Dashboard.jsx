@@ -19,7 +19,9 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './components/DashboardAdmin/MenuContent'; 
-import CreativeAdminHeader from './components/DashboardAdmin/Header'
+import CreativeAdminHeader from './components/DashboardAdmin/Header';
+import ModuleManagementPage from './components/DashboardAdmin/ModuleManagement';
+import ProfesseurManagement from './components/DashboardAdmin/ProfManagement';
 
 export default function Dashboard() {
   const [darkMode, setDarkMode] = useState(false);
@@ -74,6 +76,10 @@ export default function Dashboard() {
         return <Filiere />;
       case 'home':
         return <Home />;
+      case 'professeur':
+        return <ProfesseurManagement />;
+        case 'modules':
+          return <ModuleManagementPage />;
       default:
         return <Home />;
     }
@@ -132,7 +138,6 @@ export default function Dashboard() {
         }}
       />
 
-      {/* Logo with glowing effect */}
       <Avatar
         src={logoAdmin}
         sx={{
@@ -150,7 +155,6 @@ export default function Dashboard() {
         }}
       />
 
-      {/* Title with modern typography */}
       <Typography 
         variant="h4" 
         sx={{ 
@@ -159,8 +163,8 @@ export default function Dashboard() {
           letterSpacing: '0.05em',
           textTransform: 'uppercase',
           textShadow: darkMode 
-            ? '2px 2px 4px rgba(3, 45, 130, 0.5)' 
-            : '2px 2px 4px rgba(12, 11, 85, 0.2)',
+            ? '2px 2px 4px rgba(6, 89, 255, 0.5)' 
+            : '2px 2px 4px rgba(80, 77, 255, 0.2)',
           mb: 1,
         }}
       >

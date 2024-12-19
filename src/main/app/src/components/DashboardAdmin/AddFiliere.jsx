@@ -176,6 +176,9 @@ const AddFiliereComponent = () => {
                 '& .MuiInputBase-input': {
                   color: 'blue', 
                 },
+                '& input': {
+                    backgroundColor:'transparent'
+                  },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
                     borderColor: 'blue',
