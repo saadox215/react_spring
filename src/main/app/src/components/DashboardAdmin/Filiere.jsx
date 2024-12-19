@@ -39,7 +39,7 @@ const FilierePage = () => {
         const fetchFilieres = async () => {
             try {
                 const response = await fetch('http://localhost:8081/admin/filiere');
-                
+                console.log(response);
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des filières');
                 }
@@ -281,8 +281,6 @@ const FilierePage = () => {
                     ))}
                 </motion.div>
             )}
-
-            {/* Snackbar for download feedback */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={6000}
@@ -323,6 +321,10 @@ const FilierePage = () => {
                                     '& .MuiInputBase-input': {
                                       color: 'black', 
                                     },
+                                   
+                '& input': {
+                    backgroundColor:'transparent'
+                  },
                                     '& .MuiOutlinedInput-root': {
                                       '& fieldset': {
                                         borderColor: 'blue',

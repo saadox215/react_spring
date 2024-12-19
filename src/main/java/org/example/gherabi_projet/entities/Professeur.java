@@ -16,7 +16,6 @@ public class Professeur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
     private String nom;
     private String prenom;
     private String specialite;
@@ -29,13 +28,6 @@ public class Professeur {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getNom() {
         return nom;

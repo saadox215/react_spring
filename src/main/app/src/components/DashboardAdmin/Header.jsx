@@ -55,8 +55,8 @@ const LogicDashboardHeader = ({ onModeChange }) => {
           p: 3,
           gap: 3,
           background: isDarkMode 
-            ? 'linear-gradient(135deg, #2c2c3e, #34495e)' 
-            : 'linear-gradient(135deg, #f0f4f8, #e6eaf3)',
+            ? 'linear-gradient(135deg,rgb(46, 46, 66), #34495e)' 
+            : 'linear-gradient(135deg,rgb(135, 182, 228),rgb(193, 220, 237))',
           color: isDarkMode ? 'white' : 'black',
           transition: 'all 0.5s ease'
         }}
