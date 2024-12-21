@@ -76,5 +76,17 @@ public class Filiere {
     @JsonManagedReference
     private List<Module> modules;
 
+    public List<Etudiant> getEtudiants() {
+        return etudiants;
+    }
+
+    public void setEtudiants(List<Etudiant> etudiants) {
+        this.etudiants = etudiants;
+    }
+
+    @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Etudiant> etudiants;
+
 }
 
