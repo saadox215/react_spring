@@ -2,15 +2,19 @@ package org.example.gherabi_projet.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "filiere")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Filiere {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,9 +77,21 @@ public class Filiere {
         this.modules = modules;
     }
 
-
     @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Module> modules;
+
+    public List<Etudiant> getEtudiants() {
+        return etudiants;
+    }
+
+    public void setEtudiants(List<Etudiant> etudiants) {
+        this.etudiants = etudiants;
+    }
+
+    @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Etudiant> etudiants;
+
 }
 

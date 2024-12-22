@@ -11,13 +11,22 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.example.gherabi_projet.entities.*;
 import org.example.gherabi_projet.entities.Module;
 import org.example.gherabi_projet.repository.*;
+import org.example.gherabi_projet.entities.*;
+import org.example.gherabi_projet.entities.Module;
+import org.example.gherabi_projet.repository.*;
+import org.example.gherabi_projet.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,9 +53,11 @@ public class Controller {
     @Autowired
     private ModuleRepository moduleRepository;
     @Autowired
-    private ElementRepository elementRepository;
-    @Autowired
     private EmailService emailService;
+    @Autowired
+    private Etudiantarepository etudiantRepository;
+    @Autowired
+    private ElementRepository elementRepository;
 
     @GetMapping("/filiere")
     public List<Filiere> getAllFilieres() {
@@ -57,36 +68,29 @@ public class Controller {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Compte compte) {
         try {
-            Compte authenticatedUser = compteRepository.findByLogin(compte.getLogin());
 
-            // Vérification des identifiants
+            Compte authenticatedUser = compteRepository.findByLogin(compte.getLogin());
             if (authenticatedUser == null ||
                     !authenticatedUser.getPassword().equals(compte.getPassword()) ||
                     !"admin".equals(authenticatedUser.getRole())) {
                 throw new Exception("Invalid credentials");
             }
-
-            // Générer un code de validation aléatoire
             String validationCode = generateValidationCode();
-            // Sauvegarder le code dans la base de données avec une expiration (par exemple, 10 minutes)
             authenticatedUser.setValidationCode(validationCode);
-            authenticatedUser.setValidationCodeExpiration(LocalDateTime.now().plusMinutes(10)); // Expiration dans 10 minutes
+            authenticatedUser.setValidationCodeExpiration(LocalDateTime.now().plusMinutes(10));
             compteRepository.save(authenticatedUser);
 
-            // Envoi de l'e-mail avec le code de validation
             emailService.sendEmail(
                     authenticatedUser.getLogin(),
                     "Code de validation",
                     "Votre code de validation est : " + validationCode
             );
 
-            // Retourner un message indiquant que l'e-mail a été envoyé
             return ResponseEntity.ok(Map.of(
                     "message", "User successfully logged in. Validation code sent.",
                     "login", authenticatedUser.getLogin()
             ));
         } catch (Exception e) {
-            // Gestion des erreurs
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid email or password"));
         }
     }
@@ -103,19 +107,14 @@ public class Controller {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found"));
             }
-
             if (user.getValidationCode() == null || user.getValidationCodeExpiration().isBefore(LocalDateTime.now())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Code expired or not found"));
             }
-
-            // Vérifier si le code de validation est correct
             if (!user.getValidationCode().equals(request.getValidationCode())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid validation code"));
             }
-
-            // Code validé avec succès
-            user.setValidationCode(null);  // Invalider le code une fois qu'il a été utilisé
-            user.setValidationCodeExpiration(null); // Supprimer la date d'expiration
+            user.setValidationCode(null);
+            user.setValidationCodeExpiration(null);
             compteRepository.save(user);
 
             return ResponseEntity.ok(Map.of("message", "Validation successful"));
@@ -123,9 +122,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Error during validation"));
         }
     }
-
-
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Filiere> getFiliereById(@PathVariable Long id) {

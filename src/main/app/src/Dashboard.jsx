@@ -22,6 +22,7 @@ import MenuContent from './components/DashboardAdmin/MenuContent';
 import CreativeAdminHeader from './components/DashboardAdmin/Header';
 import ModuleManagementPage from './components/DashboardAdmin/ModuleManagement';
 import ProfesseurManagement from './components/DashboardAdmin/ProfManagement';
+import Etudiant from './components/DashboardAdmin/Etudiant'
 
 export default function Dashboard() {
   const [darkMode, setDarkMode] = useState(false);
@@ -94,6 +95,8 @@ export default function Dashboard() {
         return <ProfesseurManagement />;
       case 'modules':
         return <ModuleManagementPage />;
+      case 'etudiant':
+          return <Etudiant />;
       default:
         return <Home />;
     }

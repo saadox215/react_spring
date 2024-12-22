@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
 @Table(name = "etudiant")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Etudiant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +32,6 @@ public class Etudiant {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getNom() {
         return nom;
@@ -49,6 +45,10 @@ public class Etudiant {
         return prenom;
     }
 
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
     public List<Evaluation> getEvaluations() {
         return evaluations;
     }
@@ -57,12 +57,18 @@ public class Etudiant {
         this.evaluations = evaluations;
     }
 
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     private List<Evaluation> evaluations;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "filiere_id", nullable = false)
+    @JsonBackReference
+    private Filiere filiere;
 
+    public Filiere getFiliere() {
+        return filiere;
+    }
+
+    public void setFiliere(Filiere filiere) {
+        this.filiere = filiere;
+    }
 }

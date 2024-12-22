@@ -2,18 +2,20 @@ package org.example.gherabi_projet.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
+import lombok.Setter;
 
 @Entity
 @Table(name = "element")
-public class Element implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Element {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String code;
+    private String nom;
     private double coefficient;
 
     public Long getId() {
@@ -60,7 +62,6 @@ public class Element implements Serializable {
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
     @ManyToOne
-    @JoinColumn(name = "professeur_id", nullable = true)
+    @JoinColumn(name = "professeur_id", nullable = false)
     private Professeur professeur;
-
 }

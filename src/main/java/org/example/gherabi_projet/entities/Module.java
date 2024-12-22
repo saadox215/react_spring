@@ -15,6 +15,8 @@ import java.util.List;
 @Table(name = "module")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Module {
     public Long getId() {
         return id;
@@ -69,10 +71,11 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String code;
     private String nom;
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
-    private List<Element> elements = new ArrayList<>();
+    private List<Element> elements;
 
 
 

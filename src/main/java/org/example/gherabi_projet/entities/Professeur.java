@@ -20,7 +20,6 @@ public class Professeur {
     private String prenom;
     private String specialite;
 
-
     public Long getId() {
         return id;
     }
@@ -28,7 +27,6 @@ public class Professeur {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getNom() {
         return nom;
@@ -70,11 +68,6 @@ public class Professeur {
         this.comptes = comptes;
     }
 
-    public void addElement(Element element) {
-        this.elements.add(element);
-        element.setProfeseur(this);
-    }
-
     @ManyToMany
     @JoinTable(
             name = "professeur_module",
@@ -84,6 +77,4 @@ public class Professeur {
     private List<Module> modules;
     @OneToMany(mappedBy = "professeur")
     private List<Compte> comptes = new ArrayList<>();
-    @OneToMany(mappedBy = "professeur", cascade = CascadeType.ALL)
-    private List<Element> elements = new ArrayList<>();
 }
