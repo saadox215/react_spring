@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "compte")
@@ -18,6 +19,33 @@ public class Compte {
     private String login;
     private String password;
     private String role;
+
+    public String getValidationCode() {
+        return validationCode;
+    }
+
+    public void setValidationCode(String validationCode) {
+        this.validationCode = validationCode;
+    }
+
+    public LocalDateTime getValidationCodeExpiration() {
+        return validationCodeExpiration;
+    }
+
+    public void setValidationCodeExpiration(LocalDateTime validationCodeExpiration) {
+        this.validationCodeExpiration = validationCodeExpiration;
+    }
+
+    private String validationCode;
+    private LocalDateTime validationCodeExpiration;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getLogin() {
         return login;
@@ -43,12 +71,12 @@ public class Compte {
         this.role = role;
     }
 
-    public Long getId() {
-        return id;
+    public Professeur getProfesseur() {
+        return professeur;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProfesseur(Professeur professeur) {
+        this.professeur = professeur;
     }
 
     @ManyToOne

@@ -10,17 +10,12 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Table(name = "module")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Module {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String code;
-    private String nom;
-
     public Long getId() {
         return id;
     }
@@ -29,13 +24,7 @@ public class Module {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getNom() {
         return nom;
@@ -45,15 +34,12 @@ public class Module {
         this.nom = nom;
     }
 
-    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
-    private List<Element> elements;
-
     public List<Element> getElements() {
         return elements;
     }
 
-    public void setElements(List<Element> elements) {
-        this.elements = elements;
+    public void setElements(Element element) {
+        this.elements.add(element);
     }
 
     public Filiere getFiliere() {
@@ -79,6 +65,16 @@ public class Module {
     public void setSemestres(List<Semestre> semestres) {
         this.semestres = semestres;
     }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nom;
+
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+    private List<Element> elements = new ArrayList<>();
+
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "filiere_id", nullable = false)

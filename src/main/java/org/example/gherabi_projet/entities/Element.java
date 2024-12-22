@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "element")
-public class Element {
+public class Element implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,11 +45,11 @@ public class Element {
     }
 
     public Professeur getProfeseur() {
-        return profeseur;
+        return professeur;
     }
 
     public void setProfeseur(Professeur profeseur) {
-        this.profeseur = profeseur;
+        this.professeur = profeseur;
     }
 
     public void setCoefficient(double coefficient) {
@@ -59,6 +61,6 @@ public class Element {
     private Module module;
     @ManyToOne
     @JoinColumn(name = "professeur_id", nullable = true)
-    private Professeur profeseur;
+    private Professeur professeur;
 
 }

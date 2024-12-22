@@ -1,5 +1,6 @@
 package org.example.gherabi_projet.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,13 +49,20 @@ public class Etudiant {
         return prenom;
     }
 
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
+    }
+
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;
+    }
+
+
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
 
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     private List<Evaluation> evaluations;
-
-
 
 }

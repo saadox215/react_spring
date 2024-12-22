@@ -2,13 +2,11 @@ package org.example.gherabi_projet.entities;
 
 public class ModuleDTO {
     private Long id;
-    private String code;
     private String nom;
     private String filiereNom;
 
-    public ModuleDTO(Long id, String code, String nom, String filiereNom) {
+    public ModuleDTO(Long id, String nom, String filiereNom) {
         this.id = id;
-        this.code = code;
         this.nom = nom;
         this.filiereNom = filiereNom;
     }
@@ -21,13 +19,7 @@ public class ModuleDTO {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getNom() {
         return nom;
