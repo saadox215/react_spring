@@ -1,4 +1,4 @@
-package org.example.gherabi_projet.entities;
+package org.example.gherabi_projet.dto;
 
 public class EtudiantDTO {
     private Long id;

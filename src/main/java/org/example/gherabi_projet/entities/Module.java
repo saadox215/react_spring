@@ -15,9 +15,23 @@ import java.util.List;
 @Table(name = "module")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class Module {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String code;
+    private String nom;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "semester_type")
+    private SemesterType semesterType;
+
+    public SemesterType getSemesterType() {
+        return semesterType;
+    }
+
+    public void setSemesterType(SemesterType semesterType) {
+        this.semesterType = semesterType;
+    }
     public Long getId() {
         return id;
     }
@@ -26,7 +40,13 @@ public class Module {
         this.id = id;
     }
 
+    public String getCode() {
+        return code;
+    }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getNom() {
         return nom;
@@ -40,8 +60,8 @@ public class Module {
         return elements;
     }
 
-    public void setElements(Element element) {
-        this.elements.add(element);
+    public void setElements(List<Element> elements) {
+        this.elements = elements;
     }
 
     public Filiere getFiliere() {
@@ -60,36 +80,28 @@ public class Module {
         this.professeurs = professeurs;
     }
 
-    public List<Semestre> getSemestres() {
-        return semestres;
-    }
-
-    public void setSemestres(List<Semestre> semestres) {
-        this.semestres = semestres;
-    }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String code;
-    private String nom;
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
-    private List<Element> elements;
-
-
+    @JsonIgnore
+    private List<Element> elements = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "filiere_id", nullable = false)
     @JsonBackReference
     private Filiere filiere;
 
-
     @ManyToMany(mappedBy = "modules")
     @JsonIgnore
-    private List<Professeur> professeurs;
-    @ManyToMany(mappedBy = "modules")
-    @JsonIgnore
-    private List<Semestre> semestres = new ArrayList<>();
+    private List<Professeur> professeurs = new ArrayList<>();
 
+
+    public void addElement(Element element) {
+        elements.add(element);
+        element.setModule(this);
+    }
+
+    public void removeElement(Element element) {
+        elements.remove(element);
+        element.setModule(null);
+    }
 }

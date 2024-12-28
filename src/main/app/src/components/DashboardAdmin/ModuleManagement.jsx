@@ -55,7 +55,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     transform: 'translateY(-5px)',
   }
 }));
-
+const SEMESTER_TYPES = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'];
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: '15px',
   overflow: 'hidden',
@@ -124,7 +124,8 @@ const ModuleManagementPage = () => {
   const [formData, setFormData] = useState({
     id: null,
     nom: '',
-    filiere: ''
+    filiere: '',
+    semesterType: '',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -199,10 +200,10 @@ const ModuleManagementPage = () => {
           nom: formData.nom,
           filiere: {
             id: formData.filiere
-          }
+          },
+          semesterType: formData.semesterType
         })
       });
-
       if (response.ok) {
         showSnackbar('Module ajouté avec succès');
         fetchModules();
@@ -228,7 +229,8 @@ const ModuleManagementPage = () => {
           nom: formData.nom,
           filiere: {
             id: formData.filiere
-          }
+          },
+          semesterType: formData.semesterType
         })
       });
 
@@ -397,20 +399,20 @@ const ModuleManagementPage = () => {
                     },
                     '& .MuiOutlinedInput-root': {
                       '& fieldset': {
-                        borderColor: '#7A4DFF',  // Couleur violet froid pour la bordure
+                        borderColor: '#7A4DFF', 
                       },
                       '&:hover fieldset': {
-                        borderColor: '#6A40E3',  // Un violet légèrement plus foncé au survol
+                        borderColor: '#6A40E3',
                       },
                       '&.Mui-focused fieldset': {
-                        borderColor: '#7A4DFF',  // Maintien du violet froid en focus
+                        borderColor: '#7A4DFF',
                       },
                     },
                     '& .MuiInputLabel-root': {
-                      color: '#7A4DFF',  // Couleur violet froid pour le label
+                      color: '#7A4DFF',
                     },
                     '& .MuiInputLabel-root.Mui-focused': {
-                      color: '#6A40E3',  // Couleur violet plus foncé lorsque le label est en focus
+                      color: '#6A40E3', 
                     },
                   }}
                   required
@@ -428,6 +430,47 @@ const ModuleManagementPage = () => {
                   ))}
                 </StyledTextField>
               </Grid>
+              <Grid item xs={12} md={4}>
+    <StyledTextField
+      select
+      fullWidth
+      name="semesterType"
+      label="Semestre"
+      value={formData.semesterType}
+      onChange={handleInputChange}
+      sx={{
+        flexGrow: 1,
+        '& .MuiInputBase-input': {
+          color: '#7A4DFF',
+        },
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: '#7A4DFF',
+          },
+          '&:hover fieldset': {
+            borderColor: '#6A40E3',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#7A4DFF',
+          },
+        },
+        '& .MuiInputLabel-root': {
+          color: '#7A4DFF',
+        },
+        '& .MuiInputLabel-root.Mui-focused': {
+          color: '#6A40E3',
+        },
+      }}
+      required
+      variant="outlined"
+    >
+      {SEMESTER_TYPES.map((semester) => (
+        <MenuItem key={semester} value={semester}>
+          {semester}
+        </MenuItem>
+      ))}
+    </StyledTextField>
+  </Grid>
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                   <AnimatedButton
@@ -474,14 +517,15 @@ const ModuleManagementPage = () => {
             <Fade in={!loading.modules}>
               <StyledTableContainer component={Paper}>
                 <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>Nom</TableCell>
-                      <TableCell>Filière</TableCell>
-                      <TableCell align="center">Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
+                <TableHead>
+  <TableRow>
+    <TableCell>ID</TableCell>
+    <TableCell>Nom</TableCell>
+    <TableCell>Filière</TableCell>
+    <TableCell>Semestre</TableCell>
+    <TableCell align="center">Actions</TableCell>
+  </TableRow>
+</TableHead>
                   <TableBody>
                     {modules.length > 0 ? (
                       modules.map((module) => (
@@ -489,6 +533,7 @@ const ModuleManagementPage = () => {
                           <TableCell>{module.id}</TableCell>
                           <TableCell>{module.nom}</TableCell>
                           <TableCell>{module.filiereNom || module.filiere?.nom || 'N/A'}</TableCell>
+                          <TableCell>{module.semesterType}</TableCell>
                           <TableCell align="center">
                             <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                               <AnimatedButton

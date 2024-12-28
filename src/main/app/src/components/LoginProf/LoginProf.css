@@ -79,6 +79,12 @@
     font-weight: bold;
     text-align: center;
 }
+.success-message {
+    color: #00c254;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+}
 
 .signup-link {
     margin-top: 20px;

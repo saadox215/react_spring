@@ -14,7 +14,7 @@ const Login = () => {
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [isValidationStep, setIsValidationStep] = useState(false);  // Nouvelle étape
+    const [isValidationStep, setIsValidationStep] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -28,7 +28,6 @@ const Login = () => {
         e.preventDefault();
         
         if (isValidationStep) {
-            // Vérification du code de validation
             const response = await fetch('http://localhost:8081/admin/validateCode', {
                 method: 'POST',
                 headers: {
@@ -42,7 +41,6 @@ const Login = () => {
             });
 
             if (response.ok) {
-                // Si le code est valide, on redirige vers le tableau de bord
                 setSuccess("Validation réussie !");
                 localStorage.setItem('login', 'afifisaad8@gmail.com');
                 sessionStorage.setItem('saad','hhhhh');
@@ -67,7 +65,7 @@ const Login = () => {
             if (response.ok) {
                 const data = await response.json();
                 setSuccess('Connexion réussie ! Entrez le code de validation envoyé par e-mail.');
-                setIsValidationStep(true);  // Passer à l'étape de validation
+                setIsValidationStep(true);
             } else {
                 setError('Échec de la connexion. Vérifiez vos identifiants.');
             }
@@ -116,7 +114,7 @@ const Login = () => {
                                         <button type="submit">Log In</button>
                                         {success && <Col><p className="success-message">{success}</p></Col>}
 
-                {error && <p>{error}</p>}
+                                        {error && <p className="error-message">{error}</p>}
 
                 {isValidationStep && (
                     <div>

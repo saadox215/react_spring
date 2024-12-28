@@ -1,5 +1,6 @@
 package org.example.gherabi_projet.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,9 +15,9 @@ public class Element {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String code;
     private String nom;
     private double coefficient;
+
 
     public Long getId() {
         return id;
@@ -26,16 +27,12 @@ public class Element {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public String getNom() {
+        return nom;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public double getCoefficient() {
-        return coefficient;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
     public Module getModule() {
@@ -46,22 +43,26 @@ public class Element {
         this.module = module;
     }
 
-    public Professeur getProfeseur() {
-        return professeur;
-    }
-
-    public void setProfeseur(Professeur profeseur) {
-        this.professeur = profeseur;
+    public double getCoefficient() {
+        return coefficient;
     }
 
     public void setCoefficient(double coefficient) {
         this.coefficient = coefficient;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "module_id", nullable = false)
-    private Module module;
+    public Professeur getProfesseur() {
+        return professeur;
+    }
+
+    public void setProfesseur(Professeur professeur) {
+        this.professeur = professeur;
+    }
+
     @ManyToOne
     @JoinColumn(name = "professeur_id", nullable = false)
     private Professeur professeur;
+    @ManyToOne
+    @JoinColumn(name = "module_id", nullable = false)
+    private Module module;
 }

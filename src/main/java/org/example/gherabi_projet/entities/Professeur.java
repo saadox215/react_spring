@@ -1,10 +1,10 @@
 package org.example.gherabi_projet.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,10 @@ public class Professeur {
     private String nom;
     private String prenom;
     private String specialite;
+
+    @OneToOne(mappedBy = "professeur", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Compte compte;
 
     public Long getId() {
         return id;
@@ -52,6 +56,14 @@ public class Professeur {
         this.specialite = specialite;
     }
 
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
+    }
+
     public List<Module> getModules() {
         return modules;
     }
@@ -60,21 +72,12 @@ public class Professeur {
         this.modules = modules;
     }
 
-    public List<Compte> getComptes() {
-        return comptes;
-    }
-
-    public void setComptes(List<Compte> comptes) {
-        this.comptes = comptes;
-    }
-
     @ManyToMany
     @JoinTable(
             name = "professeur_module",
             joinColumns = @JoinColumn(name = "professeur_id"),
             inverseJoinColumns = @JoinColumn(name = "module_id")
     )
-    private List<Module> modules;
-    @OneToMany(mappedBy = "professeur")
-    private List<Compte> comptes = new ArrayList<>();
+    @JsonIgnore
+    private List<Module> modules = new ArrayList<>();
 }

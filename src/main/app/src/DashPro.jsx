@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import AppNavbar from './components/DashboardAdmin/AppNavbar';
 import Filiere from './components/DashboardAdmin/Filiere';
-import Home from './components/DashboardAdmin/Home';  
+import Home from './components/ProfDash/Home';  
 import NavbarBreadcrumbs from './components/DashboardAdmin/NavbarBreadcrumbs';
 import { styled } from '@mui/material/styles';
 import logoAdmin from './assets/logoadmin.jpg';
@@ -13,7 +13,7 @@ import { Box, useTheme, Button, Typography, Avatar, Dialog, DialogActions, Dialo
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import MenuContent from './components/DashboardAdmin/MenuContent'; 
+import MenuContent from './components/ProfDash/MenuContent'; 
 import CreativeAdminHeader from './components/DashboardAdmin/Header';
 import ModuleManagementPage from './components/DashboardAdmin/ModuleManagement';
 import ProfesseurManagement from './components/DashboardAdmin/ProfManagement';
@@ -225,8 +225,6 @@ export default function Dashboard() {
           </Stack>
         </Box>
       </Box>
-
-      {/* Logout confirmation dialog */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}

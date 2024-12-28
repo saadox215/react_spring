@@ -2,11 +2,9 @@ package org.example.gherabi_projet.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,25 +17,13 @@ public class Compte {
     private String login;
     private String password;
     private String role;
-
-    public String getValidationCode() {
-        return validationCode;
-    }
-
-    public void setValidationCode(String validationCode) {
-        this.validationCode = validationCode;
-    }
-
-    public LocalDateTime getValidationCodeExpiration() {
-        return validationCodeExpiration;
-    }
-
-    public void setValidationCodeExpiration(LocalDateTime validationCodeExpiration) {
-        this.validationCodeExpiration = validationCodeExpiration;
-    }
-
     private String validationCode;
     private LocalDateTime validationCodeExpiration;
+
+    @OneToOne
+    @JoinColumn(name = "professeur_id", referencedColumnName = "id")
+    @JsonBackReference
+    private Professeur professeur;
 
     public Long getId() {
         return id;
@@ -71,6 +57,22 @@ public class Compte {
         this.role = role;
     }
 
+    public String getValidationCode() {
+        return validationCode;
+    }
+
+    public void setValidationCode(String validationCode) {
+        this.validationCode = validationCode;
+    }
+
+    public LocalDateTime getValidationCodeExpiration() {
+        return validationCodeExpiration;
+    }
+
+    public void setValidationCodeExpiration(LocalDateTime validationCodeExpiration) {
+        this.validationCodeExpiration = validationCodeExpiration;
+    }
+
     public Professeur getProfesseur() {
         return professeur;
     }
@@ -78,9 +80,4 @@ public class Compte {
     public void setProfesseur(Professeur professeur) {
         this.professeur = professeur;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "professeur_id", referencedColumnName = "id")
-    private Professeur professeur;
-
 }

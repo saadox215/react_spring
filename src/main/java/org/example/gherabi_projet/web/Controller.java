@@ -1,5 +1,10 @@
 package org.example.gherabi_projet.web;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.example.gherabi_projet.dto.CompteDTO;
+import org.example.gherabi_projet.dto.ElementDTO;
+import org.example.gherabi_projet.dto.EtudiantDTO;
+import org.example.gherabi_projet.dto.ModuleDTO;
 import org.example.gherabi_projet.entities.*;
 import org.example.gherabi_projet.entities.Module;
 import org.example.gherabi_projet.repository.CompteRepository;
@@ -7,18 +12,10 @@ import org.example.gherabi_projet.repository.FiliereRepository;
 import org.example.gherabi_projet.repository.ModuleRepository;
 import org.example.gherabi_projet.repository.ProfesseurRepository;
 import org.example.gherabi_projet.services.EmailService;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.example.gherabi_projet.entities.*;
-import org.example.gherabi_projet.entities.Module;
 import org.example.gherabi_projet.repository.*;
-import org.example.gherabi_projet.entities.*;
-import org.example.gherabi_projet.entities.Module;
-import org.example.gherabi_projet.repository.*;
-import org.example.gherabi_projet.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -27,17 +24,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.naming.AuthenticationException;
-
-import static jakarta.persistence.GenerationType.UUID;
 
 @RestController
 @RequestMapping("/admin")
@@ -217,13 +206,17 @@ public class Controller {
                 .map(module -> new ModuleDTO(
                         module.getId(),
                         module.getNom(),
-                        module.getFiliere().getNom()))
+                        module.getFiliere().getNom(),
+                        module.getSemesterType()))
                 .collect(Collectors.toList());
     }
 
 
     @PostMapping("/modules/add")
     public ResponseEntity<String> addModule(@RequestBody Module module) {
+        if (module.getSemesterType() == null) {
+            return ResponseEntity.badRequest().body("Semester type must be specified");
+        }
         Module savedModule = moduleRepository.save(module);
         return ResponseEntity.ok("Module ajouté avec succès: " + savedModule);
     }
@@ -234,6 +227,9 @@ public class Controller {
                 .map(existingModule -> {
                     existingModule.setNom(moduleDetails.getNom());
                     existingModule.setFiliere(moduleDetails.getFiliere());
+                    if (moduleDetails.getSemesterType() != null) {
+                        existingModule.setSemesterType(moduleDetails.getSemesterType());
+                    }
                     moduleRepository.save(existingModule);
                     return ResponseEntity.ok("Module mis à jour avec succès");
                 })
@@ -256,57 +252,187 @@ public class Controller {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/modules/affecter-element")
-    public ResponseEntity<String> assignElementToProfesseur(
-            @RequestParam Long professeurId,
-            @RequestParam String elementCode,
-            @RequestParam String moduleNom) {
-
-        Optional<Professeur> optionalProfesseur = professeurRepository.findById(professeurId);
-        if (optionalProfesseur.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Professeur introuvable avec l'ID " + professeurId);
+    @GetMapping("/etudiants")
+    public List<EtudiantDTO> getAllEtudiants() {
+        return etudiantRepository.findAll().stream()
+                .map(etudiant -> new EtudiantDTO(
+                        etudiant.getId(),
+                        etudiant.getNom(),
+                        etudiant.getPrenom(),
+                        etudiant.getFiliere() != null ? etudiant.getFiliere().getNom() : null,
+                        etudiant.getFiliere() != null ? etudiant.getFiliere().getId() : null))
+                .collect(Collectors.toList());
+    }
+    @PostMapping("/etudiant/add")
+    public ResponseEntity<String> addEtudiant(@RequestBody Etudiant etudiant){
+        etudiantRepository.save(etudiant);
+        return ResponseEntity.ok("Etudiant ajouté avec succès");
+    }
+    @DeleteMapping("/etudiant/delete/{id}")
+    public ResponseEntity<String> deleteEtudiant(@PathVariable Long id){
+        etudiantRepository.deleteById(id);
+        return ResponseEntity.ok("Etudiant supprimé avec succès");
+    }
+    @PutMapping("/etudiant/update/{id}")
+    public ResponseEntity<String> updateEtudiant(@PathVariable Long id, @RequestBody Etudiant etudiantDetails) {
+        return etudiantRepository.findById(id)
+                .map(existingEtudiant -> {
+                    existingEtudiant.setNom(etudiantDetails.getNom());
+                    existingEtudiant.setPrenom(etudiantDetails.getPrenom());
+                    existingEtudiant.setFiliere(etudiantDetails.getFiliere());
+                    etudiantRepository.save(existingEtudiant);
+                    return ResponseEntity.ok("Etudiant mis à jour avec succès");
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+    // -------------------- Comptes SERVICES --------------------
+    @GetMapping("/comptes")
+    public List<CompteDTO> getAllComptes() {
+        return compteRepository.findAllWithProfesseur()
+                .stream()
+                .map(CompteDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+    @PostMapping("/compte/add")
+    public ResponseEntity<?> addCompte(@RequestBody Compte compte) {
+        try {
+            compteRepository.save(compte);
+            return ResponseEntity.ok("Compte ajouté avec succès");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erreur lors de l'ajout du compte: " + e.getMessage());
         }
-        Professeur professeur = optionalProfesseur.get();
-
-        Module module = moduleRepository.findByNom(moduleNom);
-        if (module == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Module introuvable avec le nom " + moduleNom);
-        }
-
-        Element element = elementRepository.findByCode(elementCode);
-        if (element == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Élément introuvable avec le code " + elementCode);
-        }
-
-        if (element.getProfeseur() != null && !element.getProfeseur().getId().equals(professeurId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Élément déjà assigné à un autre professeur");
-        }
-
-        module.setElements(element);
-        element.setProfeseur(professeur);
-        elementRepository.save(element);
-        moduleRepository.save(module);
-
-        return ResponseEntity.ok("Élément " + elementCode + " assigné au professeur " + professeur.getNom());
     }
 
-    // Utility function to generate the class name
-    private String generateClassNameFromFiliere(String filiereName) {
-        // List of words to ignore
-        String[] ignoreWords = {"de", "d'", "du", "le", "la", "l'", "et"};
-        List<String> ignoredList = Arrays.asList(ignoreWords);
+    @DeleteMapping("/compte/delete/{id}")
+    public ResponseEntity<?> deleteCompte(@PathVariable Long id) {
+        try {
+            if (!compteRepository.existsById(Math.toIntExact(id))) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Compte non trouvé");
+            }
 
-        // Split the name into words and filter
-        return Arrays.stream(filiereName.split("\\s+"))
-                .filter(word -> !ignoredList.contains(word.toLowerCase())) // Exclude ignored words
-                .map(word -> word.substring(0, 1).toUpperCase()) // Take the first letter
-                .collect(Collectors.joining()); // Join letters
+
+            int deleted = compteRepository.deleteCompteById(id);
+
+            if (!compteRepository.existsById(Math.toIntExact(id))) {
+                return ResponseEntity.ok("Compte supprimé avec succès");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("La suppression n'a pas été effectuée");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de la suppression: " + e.getMessage());
+        }
     }
 
+    @PutMapping("/compte/update/{id}")
+    public ResponseEntity<?> updateCompte(@PathVariable Long id, @RequestBody Compte compteDetails) {
+        try {
+            return compteRepository.findById(Math.toIntExact(id))
+                    .map(existingCompte -> {
+                        existingCompte.setLogin(compteDetails.getLogin());
+                        existingCompte.setPassword(compteDetails.getPassword());
+                        existingCompte.setRole(compteDetails.getRole());
+                        existingCompte.setProfesseur(compteDetails.getProfesseur());
+                        compteRepository.save(existingCompte);
+                        return ResponseEntity.ok("Compte mis à jour avec succès");
+                    })
+                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body("Compte non trouvé"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de la mise à jour: " + e.getMessage());
+        }
+    }
+    // -------------------- ELEMENT SERVICES --------------------
+    @GetMapping("/elements")
+    public List<ElementDTO> getAllElements() {
+        return elementRepository.findAll().stream()
+                .map(element -> new ElementDTO(
+                        element.getId(),
+                        element.getNom(),
+                        element.getModule().getNom(),
+                        element.getCoefficient(),
+                        element.getProfesseur().getNom()))
+                .collect(Collectors.toList());
+    }
+    @PutMapping("/elements/update/{id}")
+    public ResponseEntity<String> updateElement(@PathVariable Long id, @RequestBody Element elementDetails) {
+        return elementRepository.findById(id)
+                .map(existingElement -> {
+                    // Update name and coefficient
+                    existingElement.setNom(elementDetails.getNom());
+                    existingElement.setCoefficient(elementDetails.getCoefficient());
+
+                    // Update module if provided
+                    if (elementDetails.getModule() != null && elementDetails.getModule().getId() != null) {
+                        Module module = moduleRepository.findById(elementDetails.getModule().getId())
+                                .orElseThrow(() -> new EntityNotFoundException("Module not found"));
+                        existingElement.setModule(module);
+                    }
+
+                    // Update professor if provided
+                    if (elementDetails.getProfesseur() != null && elementDetails.getProfesseur().getId() != null) {
+                        Professeur professeur = professeurRepository.findById(elementDetails.getProfesseur().getId())
+                                .orElseThrow(() -> new EntityNotFoundException("Professor not found"));
+                        existingElement.setProfesseur(professeur);
+                    }
+
+                    elementRepository.save(existingElement);
+                    return ResponseEntity.ok("Element mis a jour avec succès");
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+    @PostMapping("/elements/add")
+    public ResponseEntity<?> addElement(@RequestBody Element element) {
+        try {
+            if (element.getModule() == null || element.getModule().getId() == null) {
+                return ResponseEntity.badRequest()
+                        .body("Module must be specified for the element");
+            }
+
+            if (element.getProfesseur() == null || element.getProfesseur().getId() == null) {
+                return ResponseEntity.badRequest()
+                        .body("Professor must be specified for the element");
+            }
+
+            Module module = moduleRepository.findById(element.getModule().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Module not found with id: " + element.getModule().getId()));
+
+            Professeur professeur = professeurRepository.findById(element.getProfesseur().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Professor not found with id: " + element.getProfesseur().getId()));
+
+            element.setModule(module);
+            element.setProfesseur(professeur);
+
+            Element savedElement = elementRepository.save(element);
+
+            return ResponseEntity.ok(savedElement);
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error creating element: " + e.getMessage());
+        }
+    }
+    @DeleteMapping("/elements/delete")
+    public ResponseEntity<Void> deleteElement(@RequestBody Map<String, Long> payload) {
+        Long id = payload.get("id");
+
+        if (id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!elementRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        elementRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 }
 
 

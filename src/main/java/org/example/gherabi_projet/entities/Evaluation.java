@@ -15,9 +15,18 @@ public class Evaluation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code;
     private double note;
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private EvaluationType type;
+    private int exam_absence;
+
+    public int getExam_absence() {
+        return exam_absence;
+    }
+
+    public void setExam_absence(int exam_absence) {
+        this.exam_absence = exam_absence;
+    }
 
     public Long getId() {
         return id;
@@ -27,12 +36,14 @@ public class Evaluation {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+
+
+    public Etudiant getEtudiant() {
+        return etudiant;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setEtudiant(Etudiant etudiant) {
+        this.etudiant = etudiant;
     }
 
     public double getNote() {
@@ -43,17 +54,14 @@ public class Evaluation {
         this.note = note;
     }
 
-    public String getType() {
+
+    public EvaluationType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(EvaluationType type) {
         this.type = type;
     }
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "eval_type_id", referencedColumnName = "id")
-    private EvalType evalType;
 
     @ManyToOne
     @JoinColumn(name = "etudiant_id", referencedColumnName = "id")

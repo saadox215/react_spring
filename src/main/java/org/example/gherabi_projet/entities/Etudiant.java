@@ -45,6 +45,14 @@ public class Etudiant {
         return prenom;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }

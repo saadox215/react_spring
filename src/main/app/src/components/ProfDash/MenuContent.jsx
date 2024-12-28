@@ -5,25 +5,21 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import GradeRoundedIcon from '@mui/icons-material/GradeRounded';
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
-import LibraryBooksRoundedIcon from '@mui/icons-material/LibraryBooksRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
+import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-import SubjectRoundedIcon from '@mui/icons-material/SubjectRounded';
 
-const mainListItems = [
-  { text: 'Dashboard', icon: <SchoolRoundedIcon />, value: 'home' },
-  { text: 'Filières', icon: <ClassRoundedIcon />, value: 'filiere' },
-  { text: 'Modules', icon: <LibraryBooksRoundedIcon />, value: 'modules' },
-  { text: 'Elements', icon: <SubjectRoundedIcon />, value: 'elements' },
-  { text: 'Professeurs', icon: <PersonRoundedIcon />, value: 'professeur' },
-  { text: 'Étudiants', icon: <GroupRoundedIcon />, value: 'etudiant' },
-  { text: 'Gestion Comptes', icon: <AccountCircleRoundedIcon />, value: 'gestion-comptes' },
+const professorMenuItems = [
+  { text: 'Tableau de bord', icon: <DashboardRoundedIcon />, value: 'dashboard' },
+  { text: 'Mes Modules', icon: <ClassRoundedIcon />, value: 'modules' },
+  { text: 'Gestion des Notes', icon: <GradeRoundedIcon />, value: 'grades' },
+  { text: 'Rapports', icon: <AssignmentRoundedIcon />, value: 'reports' },
+  { text: 'Mon Profil', icon: <AccountCircleRoundedIcon />, value: 'profile' },
 ];
-export default function MenuContent({ onMenuClick, selectedMenu }) {
-  // Check if onMenuClick is a function
+
+export default function ProfessorMenuContent({ onMenuClick, selectedMenu }) {
   if (typeof onMenuClick !== 'function') {
     console.error('onMenuClick is not a function');
   }
@@ -31,7 +27,7 @@ export default function MenuContent({ onMenuClick, selectedMenu }) {
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
       <List dense>
-        {mainListItems.map((item, index) => (
+        {professorMenuItems.map((item, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton
               onClick={() => onMenuClick(item.value)}
@@ -39,6 +35,7 @@ export default function MenuContent({ onMenuClick, selectedMenu }) {
               sx={{
                 borderRadius: 1,
                 '&.Mui-selected': { backgroundColor: 'rgba(25, 118, 210, 0.1)' },
+                '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' },
               }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
