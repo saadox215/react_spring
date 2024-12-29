@@ -4,23 +4,45 @@ public class ElementDTO {
     private Long id;
     private String nom;
     private String moduleNom;
+    private Long moduleId;
     private double coefficient;
-    private String ProfesseurNom;
+    private String professeurNom;
+    private Long professeurId;
 
-    public ElementDTO(Long id, String nom, String moduleNom, double coefficient, String professeurNom) {
+    public ElementDTO(Long id, String nom, String moduleNom, Long moduleId,
+                      double coefficient, String professeurNom, Long professeurId) {
         this.id = id;
         this.nom = nom;
         this.moduleNom = moduleNom;
+        this.moduleId = moduleId;
         this.coefficient = coefficient;
-        ProfesseurNom = professeurNom;
+        this.professeurNom = professeurNom;
+        this.professeurId = professeurId;
+    }
+
+
+    public Long getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
     }
 
     public String getProfesseurNom() {
-        return ProfesseurNom;
+        return professeurNom;
     }
 
     public void setProfesseurNom(String professeurNom) {
-        ProfesseurNom = professeurNom;
+        this.professeurNom = professeurNom;
+    }
+
+    public Long getProfesseurId() {
+        return professeurId;
+    }
+
+    public void setProfesseurId(Long professeurId) {
+        this.professeurId = professeurId;
     }
 
     public String getNom() {

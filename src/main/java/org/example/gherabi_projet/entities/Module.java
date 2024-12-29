@@ -87,7 +87,7 @@ public class Module {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "filiere_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("filiere-module")
     private Filiere filiere;
 
     @ManyToMany(mappedBy = "modules")

@@ -15,7 +15,8 @@ import Stack from '@mui/material/Stack';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuContent from './components/ProfDash/MenuContent'; 
 import CreativeAdminHeader from './components/DashboardAdmin/Header';
-import ModuleManagementPage from './components/DashboardAdmin/ModuleManagement';
+import ProfessorElementsPage from './components/ProfDash/ProfessorElement';
+import ProfessorAbsence from './components/ProfDash/ProfessorAbsencePage'
 import ProfesseurManagement from './components/DashboardAdmin/ProfManagement';
 import Etudiant from './components/DashboardAdmin/Etudiant'
 import ElementManagement from './components/DashboardAdmin/Element';
@@ -58,10 +59,7 @@ export default function Dashboard() {
   }));
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('login');
-    if (!isLoggedIn) {
-      navigate('/admin/login');
-    }
+    
   }, [navigate]);
 
   const theme = createTheme({
@@ -81,14 +79,14 @@ export default function Dashboard() {
 
   function renderSelectedMenu(selectedMenu) {
     switch (selectedMenu) {
-      case 'filiere':
-        return <Filiere />;
+      case 'absence':
+        return <ProfessorAbsence />;
       case 'home':
         return <Home />;
       case 'professeur':
         return <ProfesseurManagement />;
       case 'modules':
-        return <ModuleManagementPage />;
+        return <ProfessorElementsPage />;
       case 'etudiant':
           return <Etudiant />;
       case 'elements':
@@ -182,7 +180,7 @@ export default function Dashboard() {
                 mb: 1,
               }}
             >
-              Admin Hub
+              Prof Hub
             </Typography>
           </Box>
           <Divider />

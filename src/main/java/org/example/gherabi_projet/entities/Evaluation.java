@@ -1,5 +1,7 @@
 package org.example.gherabi_projet.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +21,7 @@ public class Evaluation {
     @Enumerated(EnumType.STRING)
     private EvaluationType type;
     private int exam_absence;
+
 
     public int getExam_absence() {
         return exam_absence;
@@ -63,7 +66,21 @@ public class Evaluation {
         this.type = type;
     }
 
+    public Element getElement() {
+        return element;
+    }
+
+    public void setElement(Element element) {
+        this.element = element;
+    }
+
     @ManyToOne
     @JoinColumn(name = "etudiant_id", referencedColumnName = "id")
+    @JsonIgnore
     private Etudiant etudiant;
+
+    @ManyToOne
+    @JoinColumn(name = "element_id", referencedColumnName = "id")
+    @JsonBackReference("element-evaluation")
+    private Element element;
 }

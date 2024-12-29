@@ -1,6 +1,7 @@
 package org.example.gherabi_projet.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,10 +67,12 @@ public class Etudiant {
     }
 
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Evaluation> evaluations;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "filiere_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("filiere-etudiant")
     private Filiere filiere;
 
     public Filiere getFiliere() {

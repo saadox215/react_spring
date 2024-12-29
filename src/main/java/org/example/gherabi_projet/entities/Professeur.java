@@ -1,5 +1,6 @@
 package org.example.gherabi_projet.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -72,6 +73,14 @@ public class Professeur {
         this.modules = modules;
     }
 
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void setElements(List<Element> elements) {
+        this.elements = elements;
+    }
+
     @ManyToMany
     @JoinTable(
             name = "professeur_module",
@@ -80,4 +89,8 @@ public class Professeur {
     )
     @JsonIgnore
     private List<Module> modules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "professeur")
+    @JsonIgnore
+    private List<Element> elements;
 }

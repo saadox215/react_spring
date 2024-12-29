@@ -77,9 +77,6 @@ public class Filiere {
         this.modules = modules;
     }
 
-    @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Module> modules;
 
     public List<Etudiant> getEtudiants() {
         return etudiants;
@@ -89,8 +86,12 @@ public class Filiere {
         this.etudiants = etudiants;
     }
 
-    @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "filiere")
+    @JsonManagedReference("filiere-module")
+    private List<Module> modules;
+
+    @OneToMany(mappedBy = "filiere")
+    @JsonManagedReference("filiere-etudiant")
     private List<Etudiant> etudiants;
 
 }

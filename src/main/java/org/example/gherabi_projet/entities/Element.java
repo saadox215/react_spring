@@ -3,9 +3,9 @@ package org.example.gherabi_projet.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "element")
@@ -17,7 +17,16 @@ public class Element {
     private Long id;
     private String nom;
     private double coefficient;
+    @Column(nullable = false)
+    private boolean isValidated = false;
 
+    public boolean isValidated() {
+        return isValidated;
+    }
+
+    public void setValidated(boolean validated) {
+        isValidated = validated;
+    }
 
     public Long getId() {
         return id;
@@ -59,10 +68,25 @@ public class Element {
         this.professeur = professeur;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "professeur_id", nullable = false)
-    private Professeur professeur;
-    @ManyToOne
+    public Collection<Evaluation> getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(Collection<Evaluation> evaluation) {
+        this.evaluation = evaluation;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "professeur_id", nullable = false)
+    private Professeur professeur;
+
+    @OneToMany(mappedBy = "element", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Collection<Evaluation> evaluation;
+
+
 }

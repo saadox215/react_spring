@@ -71,7 +71,7 @@ const ElementManagement = () => {
     nom: '',
     moduleId: '',
     professeurId: '',
-    coefficient: '',
+    coefficient: ''
   });
 
   // Initial data fetching
@@ -145,8 +145,8 @@ const ElementManagement = () => {
     if (element) {
       setFormData({
         nom: element.nom || '',
-        moduleId: element.moduleId || '',
-        professeurId: element.professeurId || '',
+        moduleId: element.moduleId?.toString() || '',
+        professeurId: element.professeurId?.toString() || '',
         coefficient: element.coefficient?.toString() || '',
       });
       setEditingElement(element);
@@ -177,24 +177,7 @@ const ElementManagement = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === "coefficient" && formData.moduleId) {
-      const selectedModuleElements = elements.filter(element => 
-        element.module?.id === parseInt(formData.moduleId) && 
-        (!editingElement || element.id !== editingElement.id)
-      );
-      
-      const totalCoefficient = selectedModuleElements.reduce((sum, element) => 
-        sum + (parseFloat(element.coefficient) || 0), 0);
-      
-      const newTotal = totalCoefficient + parseFloat(value);
-      
-      if (newTotal > 100) {
-        showSnackbar(`Total coefficient would exceed 100 (${newTotal.toFixed(1)})`, 'error');
-        return;
-      }
-    }
-    
+    console.log(`Updating ${name} with value:`, value); // Pour le débogage
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -202,64 +185,77 @@ const ElementManagement = () => {
   };
 
 
-  // Form validation
   const validateForm = () => {
+    // Validation plus stricte
     if (!formData.nom?.trim()) {
-      showSnackbar('Please enter a name', 'error');
+      showSnackbar('Name is required', 'error');
       return false;
     }
-    if (!formData.moduleId) {
-      showSnackbar('Please select a module', 'error');
+  
+    if (!formData.moduleId || isNaN(parseInt(formData.moduleId))) {
+      showSnackbar('Valid module selection is required', 'error');
       return false;
     }
-    if (!formData.professeurId) {
-      showSnackbar('Please select a professor', 'error');
+  
+    if (!formData.professeurId || isNaN(parseInt(formData.professeurId))) {
+      showSnackbar('Valid professor selection is required', 'error');
       return false;
     }
-    if (!formData.coefficient || parseFloat(formData.coefficient) <= 0) {
-      showSnackbar('Please enter a valid coefficient', 'error');
+  
+    const coefficient = parseFloat(formData.coefficient);
+    if (!coefficient || isNaN(coefficient) || coefficient <= 0) {
+      showSnackbar('Valid coefficient is required', 'error');
       return false;
     }
-    
-    return checkCoefficientLimit(formData.moduleId, formData.coefficient);
+  
+    return true;
   };
 
-  // CRUD operations
   const handleSubmit = async () => {
     if (!validateForm()) return;
   
     setLoading(true);
     try {
+      const moduleId = parseInt(formData.moduleId);
+      const professeurId = parseInt(formData.professeurId);
+  
       const payload = {
-        id: editingElement?.id,
         nom: formData.nom.trim(),
         coefficient: parseFloat(formData.coefficient),
-        module: { id: parseInt(formData.moduleId) },
-        professeur: { id: parseInt(formData.professeurId) }
+        module: {
+          id: moduleId
+        },
+        professeur: {
+          id: professeurId
+        }
       };
   
-      const url = editingElement
-        ? `${API_BASE_URL}/elements/update/${editingElement.id}`
-        : `${API_BASE_URL}/elements/add`;
+      console.log('Payload being sent:', JSON.stringify(payload, null, 2));
   
-      const response = await fetch(url, {
-        method: editingElement ? 'PUT' : 'POST',
+      const response = await fetch(`${API_BASE_URL}/elements/add`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
   
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Operation failed');
+        const errorText = await response.text();
+        console.error('Server response:', errorText);
+        throw new Error(errorText || 'Failed to add element');
       }
   
-      showSnackbar(`Element successfully ${editingElement ? 'updated' : 'added'}`);
-      handleCloseDialog();
+      const result = await response.json();
+      console.log('Server response success:', result);
+  
       await fetchElements();
+      showSnackbar('Element added successfully');
+      handleCloseDialog();
     } catch (error) {
-      showSnackbar(error.message || 'An error occurred', 'error');
+      console.error('Error in handleSubmit:', error);
+      showSnackbar(error.message || 'Failed to add element', 'error');
     } finally {
       setLoading(false);
     }
@@ -419,7 +415,6 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
           </Button>
         </Box>
 
-        {/* Search and View Toggle */}
         <Box sx={{ mb: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
             placeholder="Search elements..."
@@ -583,36 +578,39 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
                 helperText={!formData.nom && formData.nom !== undefined ? "Name is required" : ""}
                 autoFocus
               />
-              <FormControl fullWidth required error={!formData.moduleId && formData.moduleId !== undefined}>
-                <InputLabel>Module</InputLabel>
-                <Select
-                  name="moduleId"
-                  value={formData.moduleId}
-                  onChange={handleInputChange}
-                  label="Module"
-                >
-                  {modules.map((module) => (
-                    <MenuItem key={module.id} value={module.id}>
-                      {module.nom}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth required error={!formData.professeurId && formData.professeurId !== undefined}>
-                <InputLabel>Professor</InputLabel>
-                <Select
-                  name="professeurId"
-                  value={formData.professeurId}
-                  onChange={handleInputChange}
-                  label="Professor"
-                >
-                  {professors.map((professor) => (
-                    <MenuItem key={professor.id} value={professor.id}>
-                      {professor.nom}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <FormControl fullWidth required>
+  <InputLabel>Module</InputLabel>
+  <Select
+    name="moduleId"
+    value={formData.moduleId}
+    onChange={handleInputChange}
+    label="Module"
+    error={!formData.moduleId}
+  >
+    {modules.map((module) => (
+      <MenuItem key={module.id} value={module.id}>
+        {module.nom}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+<FormControl fullWidth required>
+  <InputLabel>Professor</InputLabel>
+  <Select
+    name="professeurId"
+    value={formData.professeurId}
+    onChange={handleInputChange}
+    label="Professor"
+    error={!formData.professeurId}
+  >
+    {professors.map((professor) => (
+      <MenuItem key={professor.id} value={professor.id}>
+        {professor.nom}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
               <TextField
                 name="coefficient"
                 label="Coefficient"

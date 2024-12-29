@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import login from '../../assets/login.jpg';
 import { useNavigate } from "react-router-dom";
+import login from '../../assets/login.jpg';
 import './LoginProf.css';
 
 const Login = () => {
     const [formData, setFormData] = useState({
         login: '',
         password: '',
-        validationCode: ''
+        validationCode: '',
+        tempProfId: null // Add this to store the ID temporarily
     });
 
     const [error, setError] = useState('');
@@ -26,6 +27,8 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setSuccess('');
         
         try {
             if (isValidationStep) {
@@ -41,14 +44,19 @@ const Login = () => {
                     credentials: 'include',
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
-                    setSuccess("Validation réussie !");
-                    const data = await response.json();
-                    localStorage.setItem('profId', data.professeurId);
-                    navigate('/prof/dashboard');
+                    const profId = formData.tempProfId;
+                    if (profId) {
+                        localStorage.setItem('profId', profId);
+                        setSuccess("Validation réussie !");
+                        navigate('/prof/dashboard');
+                    } else {
+                        setError("Error: Professor ID not found");
+                    }
                 } else {
-                    const errorData = await response.json();
-                    setError(errorData.error || "Code de validation incorrect.");
+                    setError(data.error || "Code de validation incorrect.");
                 }
             } else {
                 const response = await fetch('http://localhost:8081/prof/login', {
@@ -63,17 +71,21 @@ const Login = () => {
                     credentials: 'include',
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    localStorage.setItem('profId', data.professeur_id);
+                const data = await response.json();
+
+                if (response.ok && data.professeur_id) {
+                    setFormData(prev => ({
+                        ...prev,
+                        tempProfId: data.professeur_id
+                    }));
                     setSuccess('Connexion réussie ! Entrez le code de validation envoyé par e-mail.');
                     setIsValidationStep(true);
                 } else {
-                    const errorData = await response.json();
-                    setError(errorData.error || 'Échec de la connexion. Vérifiez vos identifiants.');
+                    setError(data.error || 'Échec de la connexion. Vérifiez vos identifiants.');
                 }
             }
         } catch (err) {
+            console.error('Error:', err);
             setError('Erreur de connexion au serveur.');
         }
     };
@@ -123,7 +135,7 @@ const Login = () => {
                                 {error && <p className="error-message">{error}</p>}
                                 {success && <p className="success-message">{success}</p>}
                                 
-                                {isValidationStep ? (
+                                {isValidationStep && (
                                     <Col sm={12} className="px-1">
                                         <input
                                             type="text"
@@ -134,7 +146,7 @@ const Login = () => {
                                             required
                                         />
                                     </Col>
-                                ) : null}
+                                )}
                                 
                                 <Col sm={12} className="px-1">
                                     <button type="submit">
