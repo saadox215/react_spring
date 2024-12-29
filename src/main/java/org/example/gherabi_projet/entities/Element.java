@@ -76,6 +76,14 @@ public class Element {
         this.evaluation = evaluation;
     }
 
+    public Collection<Absence> getAbsences() {
+        return absences;
+    }
+
+    public void setAbsences(Collection<Absence> absences) {
+        this.absences = absences;
+    }
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
@@ -84,9 +92,11 @@ public class Element {
     @JoinColumn(name = "professeur_id", nullable = false)
     private Professeur professeur;
 
-    @OneToMany(mappedBy = "element", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "element", cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private Collection<Evaluation> evaluation;
-
+    @OneToMany(mappedBy = "element", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private Collection<Absence> absences;
 
 }

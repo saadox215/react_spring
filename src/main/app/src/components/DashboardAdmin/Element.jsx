@@ -232,30 +232,44 @@ const ElementManagement = () => {
   
       console.log('Payload being sent:', JSON.stringify(payload, null, 2));
   
-      const response = await fetch(`${API_BASE_URL}/elements/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+      let response;
+      if (editingElement) {
+        // Use the /{id} endpoint for updates
+        response = await fetch(`${API_BASE_URL}/elements/update/${editingElement.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        // Use the original endpoint for creation
+        response = await fetch(`${API_BASE_URL}/elements/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+      }
   
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Server response:', errorText);
-        throw new Error(errorText || 'Failed to add element');
+        throw new Error(errorText || `Failed to ${editingElement ? 'update' : 'add'} element`);
       }
   
-      const result = await response.json();
+      const result = await response.text(); // Changed to text() since update returns a string
       console.log('Server response success:', result);
   
       await fetchElements();
-      showSnackbar('Element added successfully');
+      showSnackbar(`Element ${editingElement ? 'updated' : 'added'} successfully`);
       handleCloseDialog();
     } catch (error) {
       console.error('Error in handleSubmit:', error);
-      showSnackbar(error.message || 'Failed to add element', 'error');
+      showSnackbar(error.message || `Failed to ${editingElement ? 'update' : 'add'} element`, 'error');
     } finally {
       setLoading(false);
     }

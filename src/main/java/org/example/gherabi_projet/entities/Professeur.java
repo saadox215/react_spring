@@ -90,7 +90,7 @@ public class Professeur {
     @JsonIgnore
     private List<Module> modules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "professeur")
+    @OneToMany(mappedBy = "professeur", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Element> elements;
 }
