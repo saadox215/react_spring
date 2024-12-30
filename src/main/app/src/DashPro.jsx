@@ -20,7 +20,8 @@ import ProfessorAbsence from './components/ProfDash/ProfessorAbsencePage'
 import ProfesseurManagement from './components/DashboardAdmin/ProfManagement';
 import Etudiant from './components/DashboardAdmin/Etudiant'
 import ElementManagement from './components/DashboardAdmin/Element';
-import Compte from './components/DashboardAdmin/Compte'
+import Compte from './components/DashboardAdmin/Compte';
+import ProfessorProfile from './components/ProfDash/ProfesseurProfil';
 
 export default function Dashboard() {
   const [darkMode, setDarkMode] = useState(false);
@@ -83,8 +84,8 @@ export default function Dashboard() {
         return <ProfessorAbsence />;
       case 'home':
         return <Home />;
-      case 'professeur':
-        return <ProfesseurManagement />;
+      case 'profil':
+        return <ProfessorProfile />;
       case 'modules':
         return <ProfessorElementsPage />;
       case 'etudiant':

@@ -368,4 +368,14 @@ public class ControllerProf {
                     .body(Map.of("error", "Error adding absence: " + e.getMessage()));
         }
     }
+    @GetMapping("/profile/{profId}")
+    public ResponseEntity<?> getProfile(@PathVariable Long profId) {
+        try {
+            return ResponseEntity.ok(professeurRepository.findProfesseurById(profId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 }

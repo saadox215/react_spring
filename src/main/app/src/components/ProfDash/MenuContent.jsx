@@ -16,7 +16,7 @@ const professorMenuItems = [
   { text: 'Gestion des Notes', icon: <GradeRoundedIcon />, value: 'modules' },
   { text: 'Gestion des Absences', icon: <ClassRoundedIcon />, value: 'absence' },
   { text: 'Rapports', icon: <AssignmentRoundedIcon />, value: 'reports' },
-  { text: 'Mon Profil', icon: <AccountCircleRoundedIcon />, value: 'profile' },
+  { text: 'Mon Profil', icon: <AccountCircleRoundedIcon />, value: 'profil' },
 ];
 
 export default function ProfessorMenuContent({ onMenuClick, selectedMenu }) {
