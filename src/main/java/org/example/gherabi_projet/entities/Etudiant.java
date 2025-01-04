@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -75,6 +76,14 @@ public class Etudiant {
     @JsonBackReference("filiere-etudiant")
     private Filiere filiere;
 
+    public Collection<Absence> getAbsences() {
+        return absences;
+    }
+
+    public void setAbsences(Collection<Absence> absences) {
+        this.absences = absences;
+    }
+
     public Filiere getFiliere() {
         return filiere;
     }
@@ -82,4 +91,7 @@ public class Etudiant {
     public void setFiliere(Filiere filiere) {
         this.filiere = filiere;
     }
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private Collection<Absence> absences;
 }

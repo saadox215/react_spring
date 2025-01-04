@@ -357,25 +357,25 @@ public class Controller {
                         element.getModule().getId(),
                         element.getCoefficient(),
                         element.getProfesseur().getNom(),
-                        element.getProfesseur().getId()))
+                        element.getProfesseur().getId(),
+                        element.isValidated()))
                 .collect(Collectors.toList());
     }
     @PutMapping("/elements/update/{id}")
     public ResponseEntity<String> updateElement(@PathVariable Long id, @RequestBody Element elementDetails) {
         return elementRepository.findById(id)
                 .map(existingElement -> {
-                    // Update name and coefficient
                     existingElement.setNom(elementDetails.getNom());
                     existingElement.setCoefficient(elementDetails.getCoefficient());
 
-                    // Update module if provided
+                    existingElement.setValidated(elementDetails.isValidated());
+
                     if (elementDetails.getModule() != null && elementDetails.getModule().getId() != null) {
                         Module module = moduleRepository.findById(elementDetails.getModule().getId())
                                 .orElseThrow(() -> new EntityNotFoundException("Module not found"));
                         existingElement.setModule(module);
                     }
 
-                    // Update professor if provided
                     if (elementDetails.getProfesseur() != null && elementDetails.getProfesseur().getId() != null) {
                         Professeur professeur = professeurRepository.findById(elementDetails.getProfesseur().getId())
                                 .orElseThrow(() -> new EntityNotFoundException("Professor not found"));
@@ -390,7 +390,6 @@ public class Controller {
     @PostMapping("/elements/add")
     public ResponseEntity<?> addElement(@RequestBody Element element) {
         try {
-            // Debug logs
             System.out.println("Received element object: " + element);
             System.out.println("Element name: " + element.getNom());
             System.out.println("Element coefficient: " + element.getCoefficient());
@@ -409,7 +408,6 @@ public class Controller {
                 System.out.println("Professor is null");
             }
 
-            // Validation
             if (element.getModule() == null || element.getModule().getId() == null) {
                 return ResponseEntity.badRequest()
                         .body("Module must be specified for the element");
@@ -420,18 +418,15 @@ public class Controller {
                         .body("Professor must be specified for the element");
             }
 
-            // Fetch related entities
             Module module = moduleRepository.findById(element.getModule().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Module not found with id: " + element.getModule().getId()));
 
             Professeur professeur = professeurRepository.findById(element.getProfesseur().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Professor not found with id: " + element.getProfesseur().getId()));
 
-            // Set the entities
             element.setModule(module);
             element.setProfesseur(professeur);
 
-            // Save the element
             Element savedElement = elementRepository.save(element);
             System.out.println("Successfully saved element: " + savedElement);
 

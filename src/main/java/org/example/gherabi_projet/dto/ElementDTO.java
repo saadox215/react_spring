@@ -8,9 +8,10 @@ public class ElementDTO {
     private double coefficient;
     private String professeurNom;
     private Long professeurId;
+    private boolean isValidated;
 
     public ElementDTO(Long id, String nom, String moduleNom, Long moduleId,
-                      double coefficient, String professeurNom, Long professeurId) {
+                      double coefficient, String professeurNom, Long professeurId, boolean isValidated) {
         this.id = id;
         this.nom = nom;
         this.moduleNom = moduleNom;
@@ -18,8 +19,16 @@ public class ElementDTO {
         this.coefficient = coefficient;
         this.professeurNom = professeurNom;
         this.professeurId = professeurId;
+        this.isValidated = isValidated;
     }
 
+    public boolean isValidated() {
+        return isValidated;
+    }
+
+    public void setValidated(boolean validated) {
+        isValidated = validated;
+    }
 
     public Long getModuleId() {
         return moduleId;

@@ -43,11 +43,16 @@ export default function Dashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('login');  
-    navigate('/admin/login');  
+    localStorage.removeItem('profId');  
+    navigate('/profs/login');  
     handleCloseDialog();
   };
-
+useEffect(() => {
+    const isLoggedIn = localStorage.getItem('profId');
+    if (!isLoggedIn) {
+      navigate('/profs/login');
+    }
+  }, [navigate]);
   const Drawer = styled(MuiDrawer)(() => ({
     width: drawerWidth,
     flexShrink: 0,

@@ -259,7 +259,6 @@ const ProfessorGradesPage = () => {
       doc.text(`Lowest grade: ${stats.lowest}`, 14, finalY + 41);
       doc.text(`Total absences: ${stats.totalAbsences}`, 14, finalY + 48);
   
-      // Add footer
       const pageCount = doc.internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
@@ -282,7 +281,6 @@ const ProfessorGradesPage = () => {
   };
   
   const formatGrade = (grade) => {
-    if (!grade) return '-';
     return grade === 'ABS' ? 'ABS' : grade.toString();
   };
   
@@ -344,7 +342,7 @@ const ProfessorGradesPage = () => {
         if (value === 'ABS' || (!isNaN(value) && value !== '')) {
           preparedGrades[studentId][type] = value;
         } else {
-          preparedGrades[studentId][type] = 0; // Default to 0 for invalid/empty values
+          preparedGrades[studentId][type] = 0;
         }
       });
     });
@@ -473,18 +471,23 @@ const ProfessorGradesPage = () => {
                       {['EXAM', 'TP', 'PROJET'].map((type) => (
                         <TableCell key={type} align="center">
                           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                            <TextField
-                              size="small"
-                              value={tempGrades[student.id]?.[type] || ''}
-                              onChange={(e) => handleGradeChange(student.id, type, e.target.value)}
-                              disabled={isElementValidated}
-                              inputProps={{
-                                style: { textAlign: 'center', width: '50px',color:'black' },
-                                min: 0,
-                                max: 20,
-                                step: 0.25,
-                              }}
-                            />
+                          <TextField
+  size="small"
+  value={tempGrades[student.id]?.[type] ?? ''}
+  onChange={(e) => handleGradeChange(student.id, type, e.target.value)}
+  disabled={isElementValidated}
+  inputProps={{
+    style: { textAlign: 'center', width: '60px', color: 'black' },
+    min: 0,
+    max: 20,
+    step: 0.25,
+    type: 'number'
+  }}
+  InputProps={{
+    inputMode: 'numeric',
+    'aria-label': 'grade input'
+  }}
+/>
                             <Button
                               size="small"
                               variant={tempGrades[student.id]?.[type] === 'ABS' ? 'contained' : 'outlined'}

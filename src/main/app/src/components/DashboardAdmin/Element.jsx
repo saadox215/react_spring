@@ -306,6 +306,34 @@ const ElementManagement = () => {
     setDeleteItemId(id);
     setOpenDeleteDialog(true);
   };
+  const handleValidationToggle = async (element) => {
+    setLoading(true);
+    try {
+      const updatedElement = {
+        ...element,
+        validated: !element.validated
+      };
+  
+      const response = await fetch(`${API_BASE_URL}/elements/update/${element.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedElement)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update validation status');
+      }
+  
+      await fetchElements();
+      showSnackbar(`Element ${element.validated ? 'invalidated' : 'validated'} successfully`);
+    } catch (error) {
+      showSnackbar(error.message || 'Error updating validation status', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 const checkCoefficientLimit = (moduleId, newCoefficient) => {
   const selectedModuleElements = elements.filter(element => 
     element.module?.id === parseInt(moduleId) && 
@@ -339,29 +367,37 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
   // Component: ElementCard
   const ElementCard = ({ element }) => (
     <Card 
-      elevation={3}
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'transform 0.2s, box-shadow 0.2s',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: theme.shadows[6],
-        },
-      }}
-    >
-      <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-            {element.nom}
-          </Typography>
+    elevation={3}
+    sx={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      transition: 'transform 0.2s, box-shadow 0.2s',
+      '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: theme.shadows[6],
+      },
+    }}
+  >
+    <CardContent>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+          {element.nom}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <Chip
             label={element.coefficient}
             color="primary"
             size="small"
             icon={<CoefIcon />}
           />
+          <Chip
+            label={element.validated ? "Validé" : "Non validé"}
+            color={element.validated ? "success" : "warning"}
+            size="small"
+            onClick={() => handleValidationToggle(element)}
+          />
+        </Box>
         </Box>
         <Divider sx={{ my: 1 }} />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 2 }}>
@@ -442,6 +478,9 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
               '& .MuiInputBase-input': {
                 color: 'blue',
               },
+              '& input': {
+                            backgroundColor:'transparent'
+                          },
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   borderColor: 'blue',
@@ -497,30 +536,40 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
           </Grid>
         ) : (
           <TableContainer component={Paper} elevation={3}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Module</TableCell>
-                  <TableCell>Professor</TableCell>
-                  <TableCell>Coefficient</TableCell>
-                  <TableCell align="right">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredElements.map((element) => (
-                  <TableRow key={element.id} hover>
-                    <TableCell>{element.nom}</TableCell>
-                    <TableCell>{element.moduleNom}</TableCell>
-                    <TableCell>{element.professeurNom}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={element.coefficient}
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </TableCell>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Module</TableCell>
+                <TableCell>Professor</TableCell>
+                <TableCell>Coefficient</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell align="right">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredElements.map((element) => (
+                <TableRow key={element.id} hover>
+                  <TableCell>{element.nom}</TableCell>
+                  <TableCell>{element.moduleNom}</TableCell>
+                  <TableCell>{element.professeurNom}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={element.coefficient}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={element.validated ? "Validé" : "Non validé"}
+                      color={element.validated ? "success" : "warning"}
+                      size="small"
+                      onClick={() => handleValidationToggle(element)}
+                      sx={{ cursor: 'pointer' }}
+                    />
+                  </TableCell>
                     <TableCell align="right">
                       <Tooltip title="Edit">
                         <IconButton
