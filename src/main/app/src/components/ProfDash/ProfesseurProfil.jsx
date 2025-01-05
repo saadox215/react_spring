@@ -118,7 +118,7 @@ const ProfessorProfile = () => {
     setLoading(true);
     try {
       const profId = localStorage.getItem('profId');
-      const response = await fetch(`${API_BASE_URL}/update-password/${profId}`, {
+      const response = await fetch(`${API_BASE_URL}/profile/update-password/${profId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -153,7 +153,7 @@ const ProfessorProfile = () => {
     setLoading(true);
     try {
       const profId = localStorage.getItem('profId');
-      const response = await fetch(`${API_BASE_URL}/update/${profId}`, {
+      const response = await fetch(`${API_BASE_URL}/profile/update-data/${profId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

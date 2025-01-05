@@ -414,12 +414,12 @@ const ProfessorGradesPage = () => {
       <Paper elevation={3} sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
           <Typography variant="h4" component="h1">
-            Grade Management
+            Gestion des Notes
           </Typography>
         </Box>
   
         <FormControl fullWidth sx={{ mb: 4 }}>
-          <InputLabel>Select Element</InputLabel>
+          <InputLabel>Select element</InputLabel>
           <Select
             value={selectedElement}
             label="Select Element"
@@ -513,12 +513,12 @@ const ProfessorGradesPage = () => {
               <Box>
                 {elementMean !== null && (
                   <Typography variant="subtitle1">
-                    Element Mean: {elementMean}
+                    moyenne element: {elementMean}
                   </Typography>
                 )}
                 {moduleMean !== null && (
                   <Typography variant="subtitle1">
-                    Module Mean: {moduleMean}
+                    moyenne module: {moduleMean}
                   </Typography>
                 )}
               </Box>
@@ -529,7 +529,7 @@ const ProfessorGradesPage = () => {
                   startIcon={<CalculateIcon />}
                   onClick={calculateElementMean}
                 >
-                  Calculate Means
+                  calculer moyenne
                 </Button>
                 {isElementValidated && (
                   <Button
@@ -538,7 +538,7 @@ const ProfessorGradesPage = () => {
                     startIcon={<FileDownloadIcon />}
                     onClick={exportGrades}
                   >
-                    Export PDF
+                    Exporter PDF
                   </Button>
                 )}
               </Box>
@@ -552,7 +552,7 @@ const ProfessorGradesPage = () => {
                 onClick={cancelChanges}
                 disabled={!hasUnsavedChanges || isElementValidated}
               >
-                Cancel Changes
+                Annuler les modifications
               </Button>
               <Button
                 variant="contained"
@@ -560,7 +560,7 @@ const ProfessorGradesPage = () => {
                 onClick={saveDraft}
                 disabled={!hasUnsavedChanges || isElementValidated}
               >
-                Save Draft
+                Sauvgarder comme brouillon
               </Button>
               <Button
                 variant="contained"
@@ -573,7 +573,7 @@ const ProfessorGradesPage = () => {
                 }}
                 disabled={isElementValidated}
               >
-                Validate Grades
+                Valider les Notes
               </Button>
             </Box>
           </>
@@ -594,7 +594,7 @@ const ProfessorGradesPage = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setConfirmDialog({ ...confirmDialog, open: false })}>
-              Cancel
+              Annuler
             </Button>
             <Button
               variant="contained"
@@ -604,7 +604,7 @@ const ProfessorGradesPage = () => {
                 if (confirmDialog.callback) confirmDialog.callback();
               }}
             >
-              Confirm
+              Confirmer
             </Button>
           </DialogActions>
         </Dialog>

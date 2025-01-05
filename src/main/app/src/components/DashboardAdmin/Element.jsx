@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { generateElementPDF } from './Pdf';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import {
   Box,
   Button,
@@ -93,7 +95,22 @@ const ElementManagement = () => {
     fetchInitialData();
   }, []);
 
-  // API calls
+  const handlePDFExport = async (element) => {
+    if (!element.validated) {
+      showSnackbar("L'élément doit être validé pour exporter les notes", 'error');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await generateElementPDF(element);
+      showSnackbar('PDF exporté avec succès');
+    } catch (error) {
+      showSnackbar('Erreur lors de l\'exportation du PDF', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
   const fetchElements = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/elements`);
@@ -433,6 +450,16 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
+          <Tooltip title="Exporter PDF">
+  <IconButton
+    size="small"
+    color="primary"
+    onClick={() => handlePDFExport(element)}
+    disabled={!element.validated}
+  >
+    <FileDownloadIcon />
+  </IconButton>
+</Tooltip>
         </Box>
       </CardContent>
     </Card>
@@ -518,6 +545,7 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
                 <ListViewIcon />
               </IconButton>
             </Tooltip>
+           
           </Box>
         </Box>
 
@@ -545,6 +573,7 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
                 <TableCell>Coefficient</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell align="right">Actions</TableCell>
+                <TableCell>Notes PDF</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -590,6 +619,18 @@ const checkCoefficientLimit = (moduleId, newCoefficient) => {
                         </IconButton>
                       </Tooltip>
                     </TableCell>
+                    <TableCell>
+  <Tooltip title="Exporter PDF">
+    <IconButton
+      size="small"
+      color="primary"
+      onClick={() => handlePDFExport(element)}
+      disabled={!element.validated}
+    >
+      <FileDownloadIcon />
+    </IconButton>
+  </Tooltip>
+</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

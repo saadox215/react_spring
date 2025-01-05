@@ -139,7 +139,7 @@ const ProfessorAbsencePage = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
           <PersonIcon sx={{ fontSize: 40, mr: 2, color: 'primary.main' }} />
           <Typography variant="h4" component="h1">
-            Absence Management
+            Gestion des Absences
           </Typography>
         </Box>
 

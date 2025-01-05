@@ -2,6 +2,7 @@ package org.example.gherabi_projet.web;
 
 import jakarta.transaction.Transactional;
 import org.example.gherabi_projet.dto.EvaluationDTO;
+import org.example.gherabi_projet.dto.ProfesseurDTO;
 import org.example.gherabi_projet.entities.*;
 import org.example.gherabi_projet.entities.Module;
 import org.example.gherabi_projet.repository.*;
@@ -197,7 +198,45 @@ public class ControllerProf {
                     .body(Map.of("error", "Error fetching grades: " + e.getMessage()));
         }
     }
+    @GetMapping("/students/{profId}")
+    public ResponseEntity<?> getProfessorStudents(@PathVariable Long profId) {
+        try {
+            Optional<Professeur> professeurOpt = professeurRepository.findById(profId);
+            if (professeurOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Professor not found"));
+            }
 
+            Professeur professeur = professeurOpt.get();
+            Set<Map<String, Object>> studentsList = new HashSet<>();
+
+            // Get all elements taught by the professor
+            List<Element> elements = elementRepository.findByProfesseur(professeur);
+
+            // For each element, get students through the filière
+            for (Element element : elements) {
+                Module module = element.getModule();
+                Filiere filiere = module.getFiliere();
+                List<Etudiant> students = filiere.getEtudiants();
+
+                for (Etudiant etudiant : students) {
+                    Map<String, Object> studentInfo = new HashMap<>();
+                    studentInfo.put("id", etudiant.getId());
+                    studentInfo.put("nom", etudiant.getNom());
+                    studentInfo.put("prenom", etudiant.getPrenom());
+                    studentInfo.put("code", etudiant.getCode());
+                    studentInfo.put("filiere", filiere.getNom());
+                    studentInfo.put("moduleCode", module.getCode());
+                    studentsList.add(studentInfo);
+                }
+            }
+
+            return ResponseEntity.ok(new ArrayList<>(studentsList));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error fetching students: " + e.getMessage()));
+        }
+    }
     @PostMapping("/element/{elementId}/grades")
     @Transactional
     public ResponseEntity<?> saveGrades(@PathVariable Long elementId, @RequestBody Map<String, Object> request) {
@@ -368,14 +407,86 @@ public class ControllerProf {
                     .body(Map.of("error", "Error adding absence: " + e.getMessage()));
         }
     }
-    @GetMapping("/profile/{profId}")
-    public ResponseEntity<?> getProfile(@PathVariable Long profId) {
+
+    @PutMapping("/profile/update-data/{profId}")
+    public ResponseEntity<?> updateProfesseurDetails(
+            @PathVariable Long profId,
+            @RequestBody ProfesseurDTO professeurDTO) {
         try {
-            return ResponseEntity.ok(professeurRepository.findProfesseurById(profId));
+
+            // Find the professor linked to the account
+            Professeur professeur = professeurRepository.findById(profId).get();
+            Compte linkedCompte = professeur.getCompte();
+            professeur.setNom(professeurDTO.getNom());
+            professeur.setPrenom(professeurDTO.getPrenom());
+            professeur.setSpecialite(professeurDTO.getSpecialite());
+            linkedCompte.setLogin(professeurDTO.getEmail());
+            professeur.setCompte(linkedCompte);
+            compteRepository.save(linkedCompte);
+            professeurRepository.save(professeur);
+
+            return ResponseEntity.ok(Map.of("message", "Professeur details updated successfully"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Error updating professeur details: " + e.getMessage()));
         }
     }
 
+    @PutMapping("/profile/update-password/{profId}")
+    public ResponseEntity<?> updatePassword(
+            @PathVariable Long profId,
+            @RequestBody Map<String, String> passwords) {
+        try {
+            Professeur professeur = professeurRepository.findById(profId).get();
+            Compte compte = professeur.getCompte();
+            if (compte == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Compte not found"));
+            }
+
+            // Validate the current password
+            String currentPassword = passwords.get("currentPassword");
+            String newPassword = passwords.get("newPassword");
+
+            if (!compte.getPassword().equals(currentPassword)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Incorrect current password"));
+            }
+
+            // Update the password
+            compte.setPassword(newPassword);
+            compteRepository.save(compte);
+
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Error updating password: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/profile/{profId}")
+    public ResponseEntity<?> getProfesseurInfos(@PathVariable Long profId) {
+        try {
+            // Find the professor by ID
+            Professeur professeur = professeurRepository.findProfesseurById(profId);
+            if (professeur == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Professeur not found"));
+            }
+
+            // Fetch the associated account
+            List<Compte> professeurComptes = compteRepository.findAllWithProfesseur();
+            Optional<Compte> linkedCompte = professeurComptes.stream()
+                    .filter(compte -> compte.getProfesseur() != null && compte.getProfesseur().getId().equals(profId))
+                    .findFirst();
+
+            if (linkedCompte.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No associated account found for professeur"));
+            }
+
+            // Prepare and return a DTO with professor details and email
+            ProfesseurDTO professeurDTO = ProfesseurDTO.fromEntity(professeur);
+            professeurDTO.setEmail(linkedCompte.get().getLogin());
+
+            return ResponseEntity.ok(professeurDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Error fetching professeur details: " + e.getMessage()));
+        }
+    }
 
 }

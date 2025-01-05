@@ -15,7 +15,6 @@ const professorMenuItems = [
   { text: 'Tableau de bord', icon: <DashboardRoundedIcon />, value: 'dashboard' },
   { text: 'Gestion des Notes', icon: <GradeRoundedIcon />, value: 'modules' },
   { text: 'Gestion des Absences', icon: <ClassRoundedIcon />, value: 'absence' },
-  { text: 'Rapports', icon: <AssignmentRoundedIcon />, value: 'reports' },
   { text: 'Mon Profil', icon: <AccountCircleRoundedIcon />, value: 'profil' },
 ];
 

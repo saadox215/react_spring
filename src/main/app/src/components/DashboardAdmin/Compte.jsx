@@ -203,7 +203,7 @@ const AccountManagement = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4,backgroundColor:'transparent' }}>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 2, background: 'linear-gradient(to right bottom, #ffffff, #fafafa)' }}>
+      <Paper elevation={3} sx={{ p: 4, borderRadius: 2, background: 'transparent' }}>
         <Typography variant="h4" gutterBottom sx={{ 
           mb: 4, 
           color: '#1a237e', 
@@ -238,6 +238,9 @@ const AccountManagement = () => {
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
                 borderColor: 'blue',
+                '& input': {
+                    backgroundColor:'transparent'
+                  },
               },
               '&:hover fieldset': {
                 borderColor: 'darkblue',

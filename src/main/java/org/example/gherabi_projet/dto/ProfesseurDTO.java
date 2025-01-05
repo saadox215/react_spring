@@ -7,6 +7,7 @@ public class ProfesseurDTO {
     private String nom;
     private String prenom;
     private String specialite;
+    private String email;
 
 
     public Long getId() {
@@ -16,11 +17,20 @@ public class ProfesseurDTO {
     public ProfesseurDTO() {
     }
 
-    public ProfesseurDTO(Long id, String nom, String prenom, String specialite) {
-        this.id = id;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public ProfesseurDTO(String nom, String prenom, String specialite, String email, Long id) {
         this.nom = nom;
         this.prenom = prenom;
         this.specialite = specialite;
+        this.email = email;
+        this.id = id;
     }
 
     public void setId(Long id) {
