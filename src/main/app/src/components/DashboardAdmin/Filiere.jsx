@@ -56,17 +56,14 @@ const FilierePage = () => {
         fetchFilieres();
     }, []);
 
-    // PDF Download Handler
     const handlePdfDownload = (filiere) => {
         
             const pdfPath = `http://localhost:8081${filiere.pdfPath}`;
         
-            // Ouvrir le PDF dans un nouvel onglet
             window.open(pdfPath, '_blank');
-        
-            // Afficher un message de confirmation
+    
             setSnackbarMessage(`Redirection vers le PDF de ${filiere.nom} réussie`);
-            setSnackbarSeverity('info'); // Vous pouvez utiliser 'success' si vous préférez
+            setSnackbarSeverity('info'); 
             setOpenSnackbar(true);
         
         

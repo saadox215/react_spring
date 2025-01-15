@@ -205,14 +205,14 @@ const ModuleManagementPage = () => {
         })
       });
       if (response.ok) {
-        showSnackbar('Module ajouté avec succès');
+        showSnackbar('Module ajoute');
         fetchModules();
         resetForm();
       } else {
-        showSnackbar('Échec de l\'ajout du module', 'error');
+        showSnackbar('echec de l ajout du module', 'error');
       }
     } catch (error) {
-      showSnackbar('Erreur lors de l\'ajout du module', 'error');
+      showSnackbar('Erreur lors de l ajout du module', 'error');
     }
   };
 

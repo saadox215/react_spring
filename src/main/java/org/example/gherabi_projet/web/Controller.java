@@ -86,7 +86,7 @@ public class Controller {
 
     private String generateValidationCode() {
         Random rand = new Random();
-        return String.format("%06d", rand.nextInt(999999));  // Code à 6 chiffres
+        return String.format("%06d", rand.nextInt(999999));
     }
     @PostMapping("/validateCode")
     public ResponseEntity<?> validateCode(@RequestBody Compte request) {
@@ -239,15 +239,12 @@ public class Controller {
     @DeleteMapping("/modules/delete")
     public ResponseEntity<Void> deleteModule(@RequestBody Map<String, Long> payload) {
         Long id = payload.get("id");
-
         if (id == null) {
             return ResponseEntity.badRequest().build();
         }
-
         if (!moduleRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-
         moduleRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

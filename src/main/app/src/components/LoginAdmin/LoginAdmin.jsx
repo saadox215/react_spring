@@ -43,7 +43,6 @@ const Login = () => {
             if (response.ok) {
                 setSuccess("Validation réussie !");
                 localStorage.setItem('login', 'afifisaad8@gmail.com');
-                sessionStorage.setItem('saad','hhhhh');
                 navigate('/admin/dashboard');
             } else {
                 setError("Code de validation incorrect.");
